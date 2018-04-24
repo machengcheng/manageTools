@@ -48,15 +48,15 @@
                     <i class="el-icon-document"></i>
                     <span slot="title">网域列表</span>
                 </el-menu-item>
-                <el-menu-item index="2-3">
+                <el-menu-item index="/home/manageUserList" key="/home/manageUserList">
                     <i class="el-icon-document"></i>
                     <span slot="title">管理用户</span>
                 </el-menu-item>
-                <el-menu-item index="2-4">
+                <el-menu-item index="/home/systemUserList" key="/home/systemUserList">
                     <i class="el-icon-document"></i>
                     <span slot="title">系统用户</span>
                 </el-menu-item>
-                <el-menu-item index="2-4">
+                <el-menu-item index="/home/labelManage" key="/home/labelManage">
                     <i class="el-icon-document"></i>
                     <span slot="title">标签管理</span>
                 </el-menu-item>

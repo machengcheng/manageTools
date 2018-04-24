@@ -1,9 +1,8 @@
 <template>
-    <section class="network-list-default-section">
-        <add-or-update-network-dialog :addOrUpdateNetworkDialogVisible="addOrUpdateNetworkDialogVisible" @addOrUpdateNetworkDialogEvent="updateDialogStatus" :addOrUpdate="addOrUpdate"></add-or-update-network-dialog>
-        <div class="box-title">网域列表</div>
+    <section class="label-manage-default-section">
+        <div class="box-title">标签管理</div>
         <div class="box-operate">
-            <el-button type="primary" size="small" @click="createNetwork();">创建网域</el-button>
+            <el-button type="primary" size="small" @click="createLabel();">创建标签</el-button>
             <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
             <el-input v-model="searchKey" size="small" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
         </div>
@@ -24,31 +23,21 @@
                 <el-table-column
                     prop="name"
                     label="名称"
-                    sortable
                     show-overflow-tooltip
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="networkDetail" size="small">{{ scope.row.name }}</el-button>
+                        <el-button type="text" size="small">{{ scope.row.name }}</el-button>
                     </template>
+                </el-table-column>
+                <el-table-column
+                    prop="value"
+                    label="值"
+                    show-overflow-tooltip
+                >
                 </el-table-column>
                 <el-table-column
                     prop="assets"
                     label="资产"
-                    sortable
-                    show-overflow-tooltip
-                >
-                </el-table-column>
-                <el-table-column
-                    prop="gateway"
-                    label="网关"
-                    sortable
-                    show-overflow-tooltip
-                >
-                </el-table-column>
-                <el-table-column
-                    prop="remark"
-                    label="备注"
-                    sortable
                     show-overflow-tooltip
                 >
                 </el-table-column>
@@ -62,7 +51,6 @@
                             type="primary"
                             size="mini"
                             plain
-                            @click="updateUNetwork"
                         >
                             更新
                         </el-button>
@@ -80,67 +68,42 @@
                 <el-pagination layout="total, prev, pager, next" background @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
-            <div class="clear"></div>
         </div>
     </section>
 </template>
 
 <script>
-    import AddOrUpdateNetworkDialog from './AddOrUpdateNetworkDialog';
 	export default {
-		name: "network-list-default",
+		name: "label-manage-default",
 		components: {
-            AddOrUpdateNetworkDialog
+
         },
 		data() {
 			return {
-                addOrUpdateNetworkDialogVisible: false,
                 searchKey: '',
                 isLoading: false,
-                addOrUpdate: 'add',
                 tableData: [
                     {
-                        name: 'yeexun',
-                        assets: 1,
-                        gateway: 0,
-                        remark: '我的备注信息'
+                        name: '123',
+                        value: 19,
+                        assets: 6
                     }
-                ],
-                total: 0,
-                pageSize: 1,
-                page: 1
+                ]
             }
 		},
 		methods: {
             search: function () {
 
             },
-            createNetwork: function () {
-                this.addOrUpdate = 'add';
-                this.addOrUpdateNetworkDialogVisible = true;
-            },
-            updateUNetwork: function () {
-                this.addOrUpdate = 'update';
-                this.addOrUpdateNetworkDialogVisible = true;
-            },
-            handleSelectionChange: function () {
+            createLabel: function () {
 
-            },
-            handleCurrentChange: function () {
-
-            },
-            updateDialogStatus: function () {
-                this.addOrUpdateNetworkDialogVisible = false;
-            },
-            networkDetail: function () {
-                this.$router.push({ path: '/home/networkList/networkDetail' });
             }
         }
 	}
 </script>
 
 <style lang="scss">
-    .network-list-default-section {
+    .label-manage-default-section {
         padding: 18px 15px;
         margin: 15px 0;
         background-color: #fff;

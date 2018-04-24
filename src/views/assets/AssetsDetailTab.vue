@@ -73,6 +73,18 @@
                             <span class="tips">资产编号:</span>
                             <span class="detail"></span>
                         </li>
+                        <li class="info-item">
+                            <span class="tips">创建者:</span>
+                            <span class="detail">None</span>
+                        </li>
+                        <li class="info-item">
+                            <span class="tips">创建日期:</span>
+                            <span class="detail"></span>
+                        </li>
+                        <li class="info-item">
+                            <span class="tips">备注:</span>
+                            <span class="detail"></span>
+                        </li>
                     </ul>
                 </div>
             </el-col>
@@ -90,7 +102,7 @@
                             </span>
                         </li>
                         <li class="info-item">
-                            <span class="tips">发送重置密码邮件:</span>
+                            <span class="tips">更新硬件信息:</span>
                             <span class="detail">
                                 <el-button
                                     type="primary"
@@ -102,7 +114,7 @@
                             </span>
                         </li>
                         <li class="info-item">
-                            <span class="tips">发送重置密钥邮件:</span>
+                            <span class="tips">测试可连接性:</span>
                             <span class="detail">
                                 <el-button
                                     type="primary"
@@ -116,7 +128,7 @@
                     </ul>
                 </div>
                 <div class="block-item" style="min-height: 272px;margin-top: 15px;">
-                    <div class="block-title">用户组</div>
+                    <div class="block-title">节点管理</div>
                     <ul class="info-list">
                         <li class="info-item">
                             <el-input
@@ -128,7 +140,7 @@
                                 size="mini"
                                 plain
                             >
-                                加入
+                                确认
                             </el-button>
                         </li>
                         <li class="info-item bd0 mt10">
@@ -142,6 +154,14 @@
                                 >
                                 </el-button>
                             </span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="block-item" style="min-height: 272px;margin-top: 15px;">
+                    <div class="block-title">标签管理</div>
+                    <ul class="info-list">
+                        <li class="info-item">
+                            <el-tag type="primary">aaaa:111</el-tag>
                         </li>
                     </ul>
                 </div>
@@ -159,7 +179,7 @@
         props: ['assetsDetailVisible'],
 		data() {
 			return {
-
+                activateStatus: ''
             }
 		},
         watch: {

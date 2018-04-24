@@ -257,7 +257,7 @@
 		        let params = {
 
                 };
-                that.$axios.get('http://10.221.12.110/api/users/v1/users/', { params: params})
+                that.$axios.get('http://10.221.12.110:8000/api/users/', { params: params})
                     .then(function (response) {
                         let data = response.data;
                         if (data.code === '200') {
@@ -378,6 +378,7 @@
         },
         mounted: function () {
             this.drawCharts();
+            this.getData();
         },
         updated: function () {
             this.drawCharts();

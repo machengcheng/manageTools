@@ -131,10 +131,10 @@ export default [
             },
             {
                 path: 'networkList',
-                name: '资产管理',
+                name: '网域管理',
                 component: resolve => require(['views/assets/NetworkList.vue'], resolve),
                 meta: {
-                    title: '资产管理'
+                    title: '网域管理'
                 },
                 redirect: '/networkListDefault',
                 hidden: true,
@@ -145,6 +145,106 @@ export default [
                         component: resolve => require(['views/assets/NetworkListDefault.vue'], resolve),
                         meta: {
                             title: '网域列表'
+                        }
+                    },
+                    {
+                        path: 'networkDetail',
+                        name: '网域详情',
+                        component: resolve => require(['views/assets/NetworkDetail.vue'], resolve),
+                        meta: {
+                            title: '网域详情'
+                        }
+                    },
+                    {
+                        path: 'addOrUpdateGateway',
+                        name: '创建或更新网关',
+                        component: resolve => require(['views/assets/AddOrUpdateGateway.vue'], resolve),
+                        meta: {
+                            title: '创建或更新网关'
+                        }
+                    }
+                ]
+            },
+            {
+                path: 'manageUserList',
+                name: '管理用户',
+                component: resolve => require(['views/assets/ManageUserList.vue'], resolve),
+                meta: {
+                    title: '管理用户'
+                },
+                redirect: '/manageUserListDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/manageUserListDefault',
+                        name: '管理用户列表',
+                        component: resolve => require(['views/assets/ManageUserListDefault.vue'], resolve),
+                        meta: {
+                            title: '管理用户列表'
+                        }
+                    },
+                    {
+                        path: 'manageUserDetail',
+                        name: '管理用户详情',
+                        component: resolve => require(['views/assets/ManageUserDetail.vue'], resolve),
+                        meta: {
+                            title: '管理用户详情'
+                        }
+                    },
+                    {
+                        path: 'addOrUpdateManageUser',
+                        name: '创建或更新管理用户',
+                        component: resolve => require(['views/assets/AddOrUpdateManageUser.vue'], resolve),
+                        meta: {
+                            title: '创建或更新管理用户'
+                        }
+                    }
+                ]
+            },
+            {
+                path: 'systemUserList',
+                name: '系统用户',
+                component: resolve => require(['views/assets/SystemUserList.vue'], resolve),
+                meta: {
+                    title: '系统用户'
+                },
+                redirect: '/systemUserListDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/systemUserListDefault',
+                        name: '系统用户列表',
+                        component: resolve => require(['views/assets/SystemUserListDefault.vue'], resolve),
+                        meta: {
+                            title: '系统用户列表'
+                        }
+                    },
+                    {
+                        path: 'addOrUpdateSystemUser',
+                        name: '创建或更新系统用户',
+                        component: resolve => require(['views/assets/AddOrUpdateSystemUser.vue'], resolve),
+                        meta: {
+                            title: '创建或更新系统用户'
+                        }
+                    }
+                ]
+            },
+            {
+                path: 'labelManage',
+                name: '标签管理',
+                component: resolve => require(['views/assets/LabelManage.vue'], resolve),
+                meta: {
+                    title: '标签管理'
+                },
+                redirect: '/labelManageDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/labelManageDefault',
+                        name: '标签列表',
+                        component: resolve => require(['views/assets/LabelManageDefault.vue'], resolve),
+                        meta: {
+                            title: '标签列表'
                         }
                     }
                 ]

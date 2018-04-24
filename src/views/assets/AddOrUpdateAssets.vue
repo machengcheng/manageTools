@@ -1,7 +1,6 @@
 <template>
     <section class="add-or-update-assets-section">
         <div class="box-title mb20">{{this.$route.query.addOrUpdate == 'add' ? '创建资产' : '更新资产'}}</div>
-
         <div class="box-content">
             <el-form :model="addOrUpdateAssetsForm" :rules="rules" ref="addOrUpdateAssetsForm" class="demo-form-inline" label-width="120px">
                 <div class="content">
