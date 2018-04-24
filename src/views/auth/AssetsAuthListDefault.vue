@@ -34,12 +34,18 @@
                     label="用户组"
                     show-overflow-tooltip
                 >
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small">{{ scope.row.userGroup }}</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="systemUser"
                     label="系统用户"
                     show-overflow-tooltip
                 >
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small">{{ scope.row.systemUser }}</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="activate"

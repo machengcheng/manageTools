@@ -55,7 +55,7 @@
 <style lang="scss" scoped>
     .root-container {
         width: 100%;
-        min-width: 1440px;
+        /*min-width: 1440px;*/
         height: 100%;
         .outer-container {
             height: 100%;
@@ -76,12 +76,12 @@
             .inner-container {
                 .nav-header {
                     width: 100%;
-                    min-width: 1220px;
+                    /*min-width: 1220px;*/
                     background-color: #fff;
                 }
                 .main-content {
                     width: 100%;
-                    min-width: 1220px;
+                    /*min-width: 1220px;*/
                     background-color: #F9F9FA;
                 }
                 .footer-copyright {

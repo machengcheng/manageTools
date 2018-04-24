@@ -114,7 +114,14 @@
         <el-row>
             <el-col :span="16" class="pd10">
                 <div style="height: 330px;padding: 26px 22px;background-color: #fff;box-shadow: 0 1px 4px 0 rgba(222,235,250,1);border-radius: 3px;">
-
+                    <div style="font-size:16px;color:rgba(78,78,78,1);">活跃用户资产占比</div>
+                    <div style="margin: 5px 0;font-size: 13px;color: rgba(78,78,78,1);">以下图形分别描述一个月活跃用户和资产占所有用户主机的百分比</div>
+                    <el-col :span="12">
+                        <div id="chartPieUser" ref="chartPieUser" style="width:250px; float: left;height: 250px;" class="mt20 mb20"></div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div id="chartPieHost" ref="chartPieHost" style="width:250px; float: left;height: 250px;" class="mt20 mb20"></div>
+                    </el-col>
                 </div>
             </el-col>
             <el-col :span="8" class="pd10">
@@ -248,7 +255,9 @@
 		components: {},
 		data() {
 			return {
-                chartLineData: null
+                chartLineData: null,
+                chartPieUser: null,
+                chartPieHost: null
             }
 		},
 		methods: {
@@ -372,8 +381,150 @@
                     ]
                 });
             },
+            drawPieUser() {
+                this.chartPieUser = echarts.init(this.$refs.chartPieUser);
+                this.chartPieUser.setOption({
+                    title: {
+                        text: '用户',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}: {c} ({d}%)"
+                    },
+                    legend: {
+                        data: ['月未登录用户', '月活跃用户'],
+                        selectedMode: false,  //图例选择的模式(是否可以点击)
+                        bottom: 0,
+                        x: 'center'
+                    },
+                    grid: {
+                        left: '1%',
+                        right: '2%',
+                        bottom: '3%',
+                        containLabel: true //grid 区域是否包含坐标轴的刻度标签
+                    },
+                    series: [
+                        {
+                            type:'pie',
+                            radius: ['50%', '70%'],
+                            avoidLabelOverlap: false,
+                            hoverOffset: 2,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: 14,
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:[
+                                {
+                                    name: '月未登录用户',
+                                    value: 235,
+                                    //单个拐点标志的样式设置
+                                    itemStyle: {
+                                        fontSize: 12,
+                                        color: '#71AAFA'   //图形的颜色
+                                    }
+                                },
+                                {
+                                    name: '月活跃用户',
+                                    value: 80,
+                                    //单个拐点标志的样式设置
+                                    itemStyle: {
+                                        color: '#54CED4'   //图形的颜色
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                });
+            },
+            drawPieHost() {
+                this.chartPieHost = echarts.init(this.$refs.chartPieHost);
+                this.chartPieHost.setOption({
+                    title: {
+                        text: '主机',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}: {c} ({d}%)"
+                    },
+                    legend: {
+                        data: ['月未登录主机', '月活跃主机'],
+                        selectedMode: false,  //图例选择的模式(是否可以点击)
+                        bottom: 0,
+                        x: 'center'
+                    },
+                    grid: {
+                        left: '1%',
+                        right: '2%',
+                        bottom: '3%',
+                        containLabel: true //grid 区域是否包含坐标轴的刻度标签
+                    },
+                    series: [
+                        {
+                            type:'pie',
+                            radius: ['50%', '70%'],
+                            avoidLabelOverlap: false,
+                            hoverOffset: 2,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: 14,
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:[
+                                {
+                                    name: '月未登录主机',
+                                    value: 135,
+                                    //单个拐点标志的样式设置
+                                    itemStyle: {
+                                        fontSize: 12,
+                                        color: '#71AAFA'   //图形的颜色
+                                    }
+                                },
+                                {
+                                    name: '月活跃主机',
+                                    value: 80,
+                                    //单个拐点标志的样式设置
+                                    itemStyle: {
+                                        color: '#B44AC4'   //图形的颜色
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                });
+            },
             drawCharts() {
                 this.drawLineChart();
+                this.drawPieUser();
+                this.drawPieHost();
             }
         },
         mounted: function () {

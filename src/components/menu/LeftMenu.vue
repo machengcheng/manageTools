@@ -76,15 +76,15 @@
                     <i class="el-icon-menu"></i>
                     <span>会话管理</span>
                 </template>
-                <el-menu-item index="4-1">
+                <el-menu-item index="/home/onlineSession" key="/home/onlineSession">
                     <i class="el-icon-document"></i>
                     <span slot="title">在线会话</span>
                 </el-menu-item>
-                <el-menu-item index="4-2">
+                <el-menu-item index="/home/historySession" key="/home/historySession">
                     <i class="el-icon-document"></i>
                     <span slot="title">历史会话</span>
                 </el-menu-item>
-                <el-menu-item index="4-3">
+                <el-menu-item index="/home/commandRecord" key="/home/commandRecord">
                     <i class="el-icon-document"></i>
                     <span slot="title">命令记录</span>
                 </el-menu-item>
@@ -92,32 +92,12 @@
                     <i class="el-icon-document"></i>
                     <span slot="title">Web终端</span>
                 </el-menu-item>
-                <el-menu-item index="4-5">
+                <el-menu-item index="/home/terminalManage" key="/home/terminalManage">
                     <i class="el-icon-document"></i>
                     <span slot="title">终端管理</span>
                 </el-menu-item>
             </el-submenu>
-            <el-submenu index="5">
-                <template slot="title">
-                    <i class="el-icon-menu"></i>
-                    <span>作业中心</span>
-                </template>
-                <el-menu-item index="5-1">
-                    <i class="el-icon-document"></i>
-                    <span slot="title">任务列表</span>
-                </el-menu-item>
-            </el-submenu>
-            <el-submenu index="6">
-                <template slot="title">
-                    <i class="el-icon-menu"></i>
-                    <span>日志审计</span>
-                </template>
-                <el-menu-item index="6-1">
-                    <i class="el-icon-document"></i>
-                    <span slot="title">FTP日志</span>
-                </el-menu-item>
-            </el-submenu>
-            <el-menu-item index="7-1">
+            <el-menu-item index="/home/systemSettings" key="/home/systemSettings">
                 <i class="el-icon-document"></i>
                 <span slot="title">系统设置</span>
             </el-menu-item>

@@ -1,11 +1,9 @@
 <template>
-    <section class="user-group-default-section">
-        <add-or-update-user-group-dialog :addOrUpdateUserGroupDialogVisible="addOrUpdateUserGroupDialogVisible" :addOrUpdate="addOrUpdate" @addOrUpdateUserGroupDialogEvent="updateDialogStatus"></add-or-update-user-group-dialog>
-        <div class="box-title">用户组</div>
+    <section class="terminal-manage-default-section">
+        <div class="box-title">终端列表</div>
         <div class="box-operate">
-            <el-button type="primary" size="small" @click="createUserGroup">创建用户组</el-button>
-            <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
-            <el-input v-model="searchKey" size="small" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
+            <el-button  type="primary" size="small" @click="search" class="fr">查询</el-button>
+            <el-input v-model="searchKey" size="small" class="searchKey wat fr mr10" placeholder="请输入查询内容"></el-input>
         </div>
         <div class="box-content">
             <el-table
@@ -24,21 +22,33 @@
                 <el-table-column
                     prop="name"
                     label="名称"
-                    width="120"
+                    show-overflow-tooltip
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="userGroupDetail" size="small">{{ scope.row.name }}</el-button>
+                        <el-button type="text" @click="terminalDetail" size="small">{{ scope.row.name }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="user"
-                    label="用户"
+                    prop="ip"
+                    label="地址"
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="remark"
-                    label="备注"
+                    prop="session"
+                    label="会话"
+                    show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                    prop="activating"
+                    label="激活中"
+                    show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                    prop="online"
+                    label="在线"
                     show-overflow-tooltip
                 >
                 </el-table-column>
@@ -52,7 +62,6 @@
                             type="primary"
                             size="mini"
                             plain
-                            @click="updateUserGroup"
                         >
                             更新
                         </el-button>
@@ -76,60 +85,48 @@
 </template>
 
 <script>
-    import AddOrUpdateUserGroupDialog from "./AddOrUpdateUserGroupDialog";
-    export default {
-		name: "user-group-default",
+	export default {
+		name: "terminal-manage-default",
 		components: {
-            AddOrUpdateUserGroupDialog
+
         },
 		data() {
 			return {
-                addOrUpdateUserGroupDialogVisible: false,
-                addOrUpdate: 'add',
+                searchKey: '',
                 tableData: [
                     {
-                        name: 'Default',
-                        user: 1,
-                        remark: '备注信息'
+                        name: 'yeexuncoco',
+                        ip: '127.0.0.1',
+                        session: 0,
+                        activating: '',
+                        online: ''
                     }
                 ],
                 isLoading: false,
-                searchKey: '',
                 total: 0,
                 pageSize: 1,
                 page: 1
             }
 		},
 		methods: {
-            search: function () {
-
-            },
             handleSelectionChange: function () {
 
             },
             handleCurrentChange: function () {
 
             },
-            updateDialogStatus: function () {
-                this.addOrUpdateUserGroupDialogVisible = false;
+            search: function () {
+
             },
-            createUserGroup: function () {
-                this.addOrUpdate = 'add';
-                this.addOrUpdateUserGroupDialogVisible = true;
-            },
-            updateUserGroup: function () {
-                this.addOrUpdate = 'update';
-                this.addOrUpdateUserGroupDialogVisible = true;
-            },
-            userGroupDetail: function () {
-                this.$router.push({ path: '/home/userGroup/userGroupDetail' });
+            terminalDetail: function () {
+                this.$router.push({ path: '/home/terminalManage/terminalDetail' });
             }
         }
 	}
 </script>
 
 <style lang="scss">
-    .user-group-default-section {
+    .terminal-manage-default-section {
         padding: 18px 15px;
         margin: 15px 0;
         background-color: #fff;
@@ -146,6 +143,14 @@
         }
         .box-content {
             padding: 0 0 20px 15px;
+        }
+        .el-input, .el-input .el-input__inner {
+            width: 100%!important;
+            max-width: 150px;
+        }
+        .el-select .el-input__inner {
+            width: 100%!important;
+            max-width: 100px;
         }
     }
 </style>

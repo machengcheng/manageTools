@@ -284,6 +284,114 @@ export default [
                         }
                     }
                 ]
+            },
+            {
+                path: 'onlineSession',
+                name: '会话管理',
+                component: resolve => require(['views/session/OnlineSession.vue'], resolve),
+                meta: {
+                    title: '会话管理'
+                },
+                redirect: '/onlineSessionDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/onlineSessionDefault',
+                        name: ' 在线会话',
+                        component: resolve => require(['views/session/OnlineSessionDefault.vue'], resolve),
+                        meta: {
+                            title: ' 在线会话'
+                        }
+                    }
+                ]
+            },
+            {
+                path: 'historySession',
+                name: '历史会话',
+                component: resolve => require(['views/session/HistorySession.vue'], resolve),
+                meta: {
+                    title: '历史会话'
+                },
+                redirect: '/historySessionDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/historySessionDefault',
+                        name: ' 历史会话',
+                        component: resolve => require(['views/session/HistorySessionDefault.vue'], resolve),
+                        meta: {
+                            title: ' 历史会话'
+                        }
+                    }
+                ]
+            },
+            {
+                path: 'commandRecord',
+                name: '命令记录',
+                component: resolve => require(['views/session/CommandRecord.vue'], resolve),
+                meta: {
+                    title: '命令记录'
+                },
+                redirect: '/commandRecordDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/commandRecordDefault',
+                        name: ' 命令记录列表',
+                        component: resolve => require(['views/session/CommandRecordDefault.vue'], resolve),
+                        meta: {
+                            title: ' 命令记录列表'
+                        }
+                    }
+                ]
+            },
+            {
+                path: 'terminalManage',
+                name: ' 终端管理',
+                component: resolve => require(['views/session/TerminalManage.vue'], resolve),
+                meta: {
+                    title: ' 终端管理'
+                },
+                redirect: '/terminalManageDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/terminalManageDefault',
+                        name: ' 终端列表',
+                        component: resolve => require(['views/session/TerminalManageDefault.vue'], resolve),
+                        meta: {
+                            title: ' 终端列表'
+                        }
+                    },
+                    {
+                        path: 'terminalDetail',
+                        name: '终端详情',
+                        component: resolve => require(['views/session/TerminalDetail.vue'], resolve),
+                        meta: {
+                            title: '终端详情'
+                        }
+                    }
+                ]
+            },
+            {
+                path: 'systemSettings',
+                name: '系统设置',
+                component: resolve => require(['views/system/SystemSettings.vue'], resolve),
+                meta: {
+                    title: '系统设置'
+                },
+                redirect: '/systemSettingsDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/systemSettingsDefault',
+                        name: '系统设置信息',
+                        component: resolve => require(['views/system/SystemSettingsDefault.vue'], resolve),
+                        meta: {
+                            title: '系统设置信息'
+                        }
+                    }
+                ]
             }
         ]
     },
