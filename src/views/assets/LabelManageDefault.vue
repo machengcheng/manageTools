@@ -1,5 +1,6 @@
 <template>
     <section class="label-manage-default-section">
+        <add-or-update-label-dialog :addOrUpdateLabelDialogVisible="addOrUpdateLabelDialogVisible" @addOrUpdateLabelDialogEvent="updateDialogStatus"></add-or-update-label-dialog>
         <div class="box-title">标签管理</div>
         <div class="box-operate">
             <el-button type="primary" size="small" @click="createLabel();">创建标签</el-button>
@@ -51,6 +52,7 @@
                             type="primary"
                             size="mini"
                             plain
+                            @click.native="updateLabel"
                         >
                             更新
                         </el-button>
@@ -73,14 +75,17 @@
 </template>
 
 <script>
+    import AddOrUpdateLabelDialog from './AddOrUpdateLabelDialog';
 	export default {
 		name: "label-manage-default",
 		components: {
-
+            AddOrUpdateLabelDialog
         },
 		data() {
 			return {
+                addOrUpdateLabelDialogVisible: false,
                 searchKey: '',
+                addOrUpdate: 'add',
                 isLoading: false,
                 tableData: [
                     {
@@ -88,15 +93,32 @@
                         value: 19,
                         assets: 6
                     }
-                ]
+                ],
+                total: 0,
+                pageSize: 1,
+                page: 1
             }
 		},
 		methods: {
+            handleSelectionChange: function () {
+
+            },
+            handleCurrentChange: function () {
+
+            },
             search: function () {
 
             },
             createLabel: function () {
-
+                this.addOrUpdate = 'add';
+                this.addOrUpdateLabelDialogVisible = true;
+            },
+            updateLabel: function () {
+                this.addOrUpdate = 'update';
+                this.addOrUpdateLabelDialogVisible = true;
+            },
+            updateDialogStatus: function () {
+                this.addOrUpdateLabelDialogVisible = false;
             }
         }
 	}
