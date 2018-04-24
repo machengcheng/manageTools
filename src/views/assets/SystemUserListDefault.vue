@@ -147,7 +147,7 @@
                 this.$router.push({ path: '/home/systemUserList/addOrUpdateSystemUser', query: {addOrUpdate: 'update'}});
             },
             systemUserDetail: function () {
-
+                this.$router.push({ path: '/home/systemUserList/SystemUserDetail' });
             }
         }
 	}

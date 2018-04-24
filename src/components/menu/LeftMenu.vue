@@ -66,7 +66,7 @@
                     <i class="el-icon-menu"></i>
                     <span>权限管理</span>
                 </template>
-                <el-menu-item index="3-1">
+                <el-menu-item index="/home/assetsAuthList" key="/home/assetsAuthList">
                     <i class="el-icon-document"></i>
                     <span slot="title">资产授权</span>
                 </el-menu-item>

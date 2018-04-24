@@ -226,6 +226,14 @@ export default [
                         meta: {
                             title: '创建或更新系统用户'
                         }
+                    },
+                    {
+                        path: 'systemUserDetail',
+                        name: '系统用户详情',
+                        component: resolve => require(['views/assets/SystemUserDetail.vue'], resolve),
+                        meta: {
+                            title: '系统用户详情'
+                        }
                     }
                 ]
             },
@@ -245,6 +253,34 @@ export default [
                         component: resolve => require(['views/assets/LabelManageDefault.vue'], resolve),
                         meta: {
                             title: '标签列表'
+                        }
+                    }
+                ]
+            },
+            {
+                path: 'assetsAuthList',
+                name: '权限管理',
+                component: resolve => require(['views/auth/AssetsAuthList.vue'], resolve),
+                meta: {
+                    title: '权限管理'
+                },
+                redirect: '/assetsAuthListDefault',
+                hidden: true,
+                children: [
+                    {
+                        path: '/assetsAuthListDefault',
+                        name: '资产授权列表',
+                        component: resolve => require(['views/auth/AssetsAuthListDefault.vue'], resolve),
+                        meta: {
+                            title: '资产授权列表'
+                        }
+                    },
+                    {
+                        path: 'addOrUpdateAuthRule',
+                        name: '权限规则',
+                        component: resolve => require(['views/auth/AddOrUpdateAuthRule.vue'], resolve),
+                        meta: {
+                            title: '权限规则'
                         }
                     }
                 ]

@@ -1,9 +1,8 @@
 <template>
-    <section class="label-manage-default-section">
-        <add-or-update-label-dialog :addOrUpdateLabelDialogVisible="addOrUpdateLabelDialogVisible" @addOrUpdateLabelDialogEvent="updateDialogStatus" :addOrUpdate="addOrUpdate"></add-or-update-label-dialog>
-        <div class="box-title">标签管理</div>
+    <section class="assets-auth-list-default-section">
+        <div class="box-title">资产授权列表</div>
         <div class="box-operate">
-            <el-button type="primary" size="small" @click="createLabel">创建标签</el-button>
+            <el-button type="primary" size="small" @click="createAuthRule">创建权限规则</el-button>
             <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
             <el-input v-model="searchKey" size="small" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
         </div>
@@ -22,23 +21,35 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="name"
-                    label="名称"
+                    prop="node"
+                    label="节点"
                     show-overflow-tooltip
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" size="small">{{ scope.row.name }}</el-button>
+                        <el-button type="text" size="small">{{ scope.row.node }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="value"
-                    label="值"
+                    prop="userGroup"
+                    label="用户组"
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="assets"
-                    label="资产"
+                    prop="systemUser"
+                    label="系统用户"
+                    show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                    prop="activate"
+                    label="激活"
+                    show-overflow-tooltip
+                >
+                </el-table-column>
+                <el-table-column
+                    prop="deadline"
+                    label="失效日期"
                     show-overflow-tooltip
                 >
                 </el-table-column>
@@ -52,7 +63,7 @@
                             type="primary"
                             size="mini"
                             plain
-                            @click.native="updateLabel"
+                            @click="updateAuthRule"
                         >
                             更新
                         </el-button>
@@ -75,25 +86,25 @@
 </template>
 
 <script>
-    import AddOrUpdateLabelDialog from './AddOrUpdateLabelDialog';
 	export default {
-		name: "label-manage-default",
+		name: "assets-auth-list-default",
 		components: {
-            AddOrUpdateLabelDialog
+
         },
 		data() {
 			return {
-                addOrUpdateLabelDialogVisible: false,
                 searchKey: '',
                 addOrUpdate: 'add',
-                isLoading: false,
                 tableData: [
                     {
-                        name: '123',
-                        value: 19,
-                        assets: 6
+                        node: 'ROOT',
+                        userGroup: 'Default',
+                        systemUser: 'yanxu.wang',
+                        activate: 1,
+                        deadline: '2088-03-23'
                     }
                 ],
+                isLoading: false,
                 total: 0,
                 pageSize: 1,
                 page: 1
@@ -109,23 +120,18 @@
             search: function () {
 
             },
-            createLabel: function () {
-                this.addOrUpdate = 'add';
-                this.addOrUpdateLabelDialogVisible = true;
+            createAuthRule: function () {
+                this.$router.push({ path: '/home/assetsAuthList/addOrUpdateAuthRule', query: {addOrUpdate: 'add'}});
             },
-            updateLabel: function () {
-                this.addOrUpdate = 'update';
-                this.addOrUpdateLabelDialogVisible = true;
+            updateAuthRule: function () {
+                this.$router.push({ path: '/home/assetsAuthList/addOrUpdateAuthRule', query: {addOrUpdate: 'update'}});
             },
-            updateDialogStatus: function () {
-                this.addOrUpdateLabelDialogVisible = false;
-            }
         }
 	}
 </script>
 
 <style lang="scss">
-    .label-manage-default-section {
+    .assets-auth-list-default-section {
         padding: 18px 15px;
         margin: 15px 0;
         background-color: #fff;
