@@ -80,7 +80,7 @@
                             <el-input
                                 v-model="addUserDialogForm.password"
                                 size="medium"
-                                placeholder="请输入密码"
+                                placeholder="请输入密码"ss
                             >
                             </el-input>
                         </el-form-item>
@@ -130,6 +130,7 @@
                             >
                             </el-date-picker>
                         </el-form-item>
+                        ======{{addUserDialogForm.endDate}}
                     </el-col>
                     <div class="item-split">
                         <span class="item-title">个人信息</span>
@@ -175,8 +176,9 @@
                     </el-col>
                     <el-col :span="24" align="center">
                         <el-button>取 消</el-button>
-                        <el-button type="primary">确 定</el-button>
+                        <el-button type="primary" @click="add">确 定</el-button>
                     </el-col>
+                    --------{{resultsList}}
                     <div class="clear"></div>
                 </div>
             </el-form>
@@ -206,6 +208,7 @@
                     weixin: '',
                     description: ''
                 },
+                resultsList: '',
                 roleList: [
                     {
                         value: '1',
@@ -283,7 +286,50 @@
             }
 		},
 		methods: {
-
+            format: function(fmt, date) {
+                var o = {
+                    "M+": date.getMonth() + 1, //月份
+                    "d+": date.getDate(), //日
+                    "h+": date.getHours(), //小时
+                    "m+": date.getMinutes(), //分
+                    "s+": date.getSeconds(), //秒
+                    "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+                    "S": date.getMilliseconds() //毫秒
+                };
+                if (/(y+)/.test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            },
+            formatDate: function (cellValue) {alert(cellValue);
+                return this.format('yyyy-MM-dd hh:mm:ss', new Date(cellValue));
+                // return this.format('yyyy-MM-dd', new Date(cellValue));
+            },
+            add: async function () {
+                var that = this;
+                let params = {
+                    name: 'mcc0091',
+                    username: '马成成0091',
+                    password: '123456',
+                    email: '32221789531@qq.com',
+                    groups: ["10c95fe6-cc66-444a-a860-2b35cf33f653"],
+                    role: 'Admin',
+                    date_expired: that.formatDate(that.addUserDialogForm.endDate),
+                    phone: '13800138019',
+                    wechat: 'weixin03207691852',
+                    comment: '我的评论12812971'
+                };
+                this.isLoading = true;
+                const res = await that.$axios.post('http://localhost:8000/api/users/user/', params);
+                if (res.status === 201) {
+                    this.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
+                }
+            }
         }
 	}
 </script>
@@ -317,7 +363,7 @@
                 }
             }
             .el-input .el-input__inner {
-                width: 70%!important;
+                width: 100%!important;
             }
             .el-select .el-input__inner {
                 width: 100%!important;

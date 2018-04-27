@@ -12,7 +12,7 @@
         <div class="box-content">
             <el-table
                 ref="multipleTable"
-                :data="tableData3"
+                :data="tableData"
                 tooltip-effect="dark"
                 v-loading="isLoading"
                 style="width: 100%"
@@ -33,7 +33,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="userName"
+                    prop="username"
                     label="用户名"
                     width="120"
                 >
@@ -45,16 +45,18 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="userGroup"
+                    prop="groups_display"
                     label="用户组"
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="activating"
+                    prop="is_active"
                     label="激活中"
-                    show-overflow-tooltip
                 >
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="userDetail" size="small">{{ scope.row.is_active ? '是' : '否' }}</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     label="动作"
@@ -81,7 +83,7 @@
                 </el-table-column>
             </el-table>
             <el-col :span="24" class="toolbar">
-                <el-pagination layout="total, prev, pager, next" background @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
+                <el-pagination layout="sizes, total, prev, pager, next" background @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-sizes="pageSizes" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
         </div>
@@ -120,7 +122,7 @@
                 searchKey: '',
                 operateType: '',
                 isLoading: false,
-                tableData3: [],
+                tableData: [],
                 multipleSelection: [],
                 operateTypes: [
                     {
@@ -141,7 +143,8 @@
                     }
                 ],
                 total: 0,
-                pageSize: 1,
+                pageSizes: [1,2,3,4],
+                pageSize: 2,
                 page: 1
             }
 		},
@@ -149,32 +152,47 @@
             handleSelectionChange: function (val) {
                 this.multipleSelection = val;
             },
-            handleCurrentChange: function () {
-
-            },
             search: function () {
                 this.page = 1;
                 this.getData();
             },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.search();
+            },
+            handleCurrentChange(val) {
+                this.page = val;
+                this.getData();
+            },
             getData: async function() {
-                this.tableData3 = [
-                    {
-                        name: 'Administrator',
-                        userName: 'admin',
-                        role: '管理员',
-                        userGroup: 'Default',
-                        activating: '√'
-                    },
-                    {
-                        name: 'test',
-                        userName: 'test',
-                        role: '用户',
-                        userGroup: 'Default',
-                        activating: '√'
-                    }
-                ];
-                this.total = this.tableData3.length;
-                this.isLoading = false;
+                var that = this;
+                let params = {
+                    limit: that.pageSize,
+                    offset: that.pageSize*(that.page-1),
+                    type: 'get'
+
+                };
+                this.isLoading = true;
+                that.$axios.get('http://localhost:8000/api/users/user', { params: params})
+                    .then(function (response) {
+                        let data = response.data;
+                        if (data.code === '200') {
+
+                        } else {
+                            that.total = data.count ? data.count : 0;
+                            that.tableData = data.results ? data.results : [];
+                            console.info(data.results);
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
             },
             createUser: function () {
                 this.$router.push({ path: '/home/userList/addOrUpdateUser', query: {addOrUpdate: 'add'}});

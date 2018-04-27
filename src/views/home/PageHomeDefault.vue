@@ -261,27 +261,6 @@
             }
 		},
 		methods: {
-		    getData: async function () {
-		        var that = this;
-		        let params = {
-
-                };
-                that.$axios.get('http://10.221.12.110:8000/api/users/', { params: params})
-                    .then(function (response) {
-                        let data = response.data;
-                        if (data.code === '200') {
-
-                        }
-                    })
-                    .catch(function (response) {
-                        that.isLoading = false;
-                        that.$message({
-                            message: '未知异常',
-                            type: 'error',
-                            duration: 1500
-                        });
-                    });
-            },
             drawLineChart() {
                 this.chartLineData = echarts.init(this.$refs.chartLine);
                 this.chartLineData.setOption({
@@ -528,8 +507,13 @@
             }
         },
         mounted: function () {
+		    let that = this;
             this.drawCharts();
-            this.getData();
+            window.onresize = function temp() {
+                that.chartLineData.resize();
+                that.chartPieUser.resize();
+                that.chartPieHost.resize();
+            };
         },
         updated: function () {
             this.drawCharts();
