@@ -1,6 +1,6 @@
 <template>
     <section class="user-detail-tab-section">
-        <el-row style="padding: 0 10px;">
+        <el-row style="display: none;padding: 0 10px;">
             <el-col :span="24">
                 <div class="box-operate pd0">
                     <el-button  type="primary" size="mini" class="fr">编辑</el-button>
@@ -18,39 +18,39 @@
                         </li>
                         <li class="info-item">
                             <span class="tips">名称:</span>
-                            <span class="detail">Administrator</span>
+                            <span class="detail">{{ userDetailData.name }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">用户名:</span>
-                            <span class="detail">admin</span>
+                            <span class="detail">{{ userDetailData.username }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">邮件:</span>
-                            <span class="detail">admin@mycomany.com</span>
+                            <span class="detail">{{ userDetailData.email }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">角色:</span>
-                            <span class="detail">管理员</span>
+                            <span class="detail">{{ userDetailData.role }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">失效日期:</span>
-                            <span class="detail">2088-03-24 16:57:53</span>
+                            <span class="detail">{{ userDetailData.date_expired }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建者:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{ userDetailData.created_by }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建日期:</span>
-                            <span class="detail">2018-04-11 16:57:53</span>
+                            <span class="detail">{{ userDetailData.date_joined }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">最后登录:</span>
-                            <span class="detail">2018-04-19 17:40:37</span>
+                            <span class="detail">{{ userDetailData.last_login }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">备注:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{ userDetailData.comment }}</span>
                         </li>
                     </ul>
                 </div>
@@ -138,7 +138,8 @@
         props: ['userDetailVisible'],
 		data() {
 			return {
-                activateStatus: ''
+                activateStatus: '',
+                userDetailData: []
             }
 		},
         watch: {
@@ -149,7 +150,32 @@
             }
         },
 		methods: {
-
+            getData: async function() {
+                let that = this;
+                let params = {
+                    id: that.$route.query.userId
+                };
+                this.isLoading = true;
+                that.$axios.get('http://localhost:8000/api/users/user', { params: params})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.userDetailData = data.data.results.length > 0 ? data.data.results[0] : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            }
+        },
+        mounted: function () {
+            this.getData();
         }
 	}
 </script>

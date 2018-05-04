@@ -29,7 +29,7 @@
                     width="120"
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="userDetail" size="small">{{ scope.row.name }}</el-button>
+                        <el-button type="text" @click="userDetail(scope.$index, scope.row)" size="small">{{ scope.row.name }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -55,7 +55,7 @@
                     label="激活中"
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="userDetail" size="small">{{ scope.row.is_active ? '是' : '否' }}</el-button>
+                        <el-button type="text" size="small">{{ scope.row.is_active ? '是' : '否' }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -68,7 +68,7 @@
                             type="primary"
                             size="mini"
                             plain
-                            @click="updateUser"
+                            @click="updateUser(scope.$index, scope.row)"
                         >
                             更新
                         </el-button>
@@ -76,6 +76,7 @@
                             type="danger"
                             size="mini"
                             plain
+                            @click="deleteUser(scope.$index, scope.row)"
                         >
                             删除
                         </el-button>
@@ -109,6 +110,8 @@
 </template>
 
 <script>
+    import axios from 'axios';
+    import qs from 'qs';
     import ImportDialog from "./ImportDialog";
 	export default {
 		name: "user-list-default",
@@ -143,8 +146,8 @@
                     }
                 ],
                 total: 0,
-                pageSizes: [1,2,3,4],
-                pageSize: 2,
+                pageSizes: [10, 20, 30, 40, 50],
+                pageSize: 10,
                 page: 1
             }
 		},
@@ -165,7 +168,7 @@
                 this.getData();
             },
             getData: async function() {
-                var that = this;
+                let that = this;
                 let params = {
                     limit: that.pageSize,
                     offset: that.pageSize*(that.page-1),
@@ -197,8 +200,8 @@
             createUser: function () {
                 this.$router.push({ path: '/home/userList/addOrUpdateUser', query: {addOrUpdate: 'add'}});
             },
-            updateUser: function () {
-                this.$router.push({ path: '/home/userList/addOrUpdateUser', query: {addOrUpdate: 'update'}});
+            updateUser: function (index, row) {
+                this.$router.push({ path: '/home/userList/addOrUpdateUser', query: {addOrUpdate: 'update', userId: row.id}});
             },
             updateDialogStatus: function () {
                 this.addOrUpdateUserDialogVisible = false;
@@ -209,8 +212,85 @@
             importDialogVisibleStatus: function () {
                 this.importDialogVisible = false;
             },
-            userDetail: function () {
-                this.$router.push({ path: '/home/userList/userDetail' });
+            userDetail: function (index, row) {
+                this.$router.push({ path: '/home/userList/userDetail', query: { userId: row.id } });
+            },
+            deleteUserFunc: async function (index, row) {
+                let that = this;
+                let tempDelArr = [];
+                tempDelArr.push(row.id);
+                let params = {
+                    id__in: tempDelArr.join(',')
+                };
+
+                const res = await that.$axios.delete('http://localhost:8000/api/users/user/', { params: params});
+                if (res.status === 204) {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功',
+                        duration: 1500
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '删除失败',
+                        duration: 1500
+                    });
+                }
+                that.search();
+            },
+            deleteUser: async function (index, row) {
+                let that = this;
+
+                that.$confirm('删除该记录?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.deleteUserFunc(index, row);
+                }).catch(() => {
+                    that.$message({
+                        type: 'info',
+                        message: '已取消删除',
+                        duration: 1500
+                    });
+                });
+
+
+                // let that = this;
+                // let tempDelArr = [];
+                // tempDelArr.push(row.id);
+                // let params = {
+                //     id__in: tempDelArr.join(',')
+                // };
+                //
+                // const res = await that.$axios.delete('http://localhost:8000/api/users/user/', { params: params});
+                // that.search();
+
+                // let that = this;
+                // let tempDelArr = [];
+                // tempDelArr.push(row.id);
+                // let params = {
+                //     id__in: tempDelArr.join(',')
+                // };
+                //
+                // that.$axios.delete('http://localhost:8000/api/users/user/', params)
+                //     .then(function (response) {
+                //         let data = response.data;
+                //         that.$message({
+                //             message: '删除成功',
+                //             type: 'success'
+                //         });
+                //         that.search();
+                //     })
+                //     .catch(function (response) {
+                //         that.isLoading = false;
+                //         that.$message({
+                //             message: '未知异常',
+                //             type: 'error',
+                //             duration: 1500
+                //         });
+                //     });
             }
         },
         mounted: function () {

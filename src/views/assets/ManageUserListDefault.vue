@@ -26,29 +26,29 @@
                     width="120"
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="manageUserDetail" size="small">{{ scope.row.name }}</el-button>
+                        <el-button type="text" @click="manageUserDetail(scope.$index, scope.row)" size="small">{{ scope.row.name }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="userName"
+                    prop="username"
                     label="用户名"
                     width="120"
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="assets"
+                    prop="assets_amount"
                     label="资产"
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="link"
+                    prop="reachable_amount"
                     label="可连接"
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="notArrive"
+                    prop="unreachable_amount"
                     label="不可达"
                     show-overflow-tooltip
                 >
@@ -60,7 +60,7 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="remark"
+                    prop="comment"
                     label="备注"
                     show-overflow-tooltip
                 >
@@ -80,9 +80,10 @@
                             更新
                         </el-button>
                         <el-button
-                            type="danger"
+                            type="danger"F
                             size="mini"
                             plain
+                            @click="deleteManageUser(scope.$index, scope.row)"
                         >
                             删除
                         </el-button>
@@ -90,9 +91,10 @@
                 </el-table-column>
             </el-table>
             <el-col :span="24" class="toolbar">
-                <el-pagination layout="total, prev, pager, next" background @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
+                <el-pagination layout="sizes, total, prev, pager, next" background :current-page="page" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-sizes="pageSizes" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
+            <div class="clear"></div>
         </div>
     </section>
 </template>
@@ -107,31 +109,29 @@
 			return {
                 searchKey: '',
                 isLoading: false,
-                tableData: [
-                    {
-                        name: 'admin.104',
-                        userName: 'root',
-                        assets: 2,
-                        link: 1,
-                        notArrive: 1,
-                        ratio: '50.0%',
-                        remark: '备注'
-                    }
-                ],
+                multipleSelection: [],
+                pageSizes: [1, 2, 3, 4, 5],
+                tableData: [],
                 total: 0,
                 pageSize: 1,
                 page: 1
             }
 		},
 		methods: {
-            handleSelectionChange: function () {
-
-            },
-            handleCurrentChange: function () {
-
-            },
             search: function () {
-
+                this.page = 1;
+                this.getData();
+            },
+            handleSelectionChange: function (val) {
+                this.multipleSelection = val;
+            },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.search();
+            },
+            handleCurrentChange(val) {
+                this.page = val;
+                this.getData();
             },
             createManageUser: function () {
                 this.$router.push({ path: '/home/manageUserList/addOrUpdateManageUser', query: {addOrUpdate: 'add'}});
@@ -139,9 +139,72 @@
             updateManageUser: function () {
                 this.$router.push({ path: '/home/manageUserList/addOrUpdateManageUser', query: {addOrUpdate: 'update'}});
             },
-            manageUserDetail: function () {
-                this.$router.push({ path: '/home/manageUserList/manageUserDetail' });
+            manageUserDetail: function (index, row) {
+                this.$router.push({ path: '/home/manageUserList/manageUserDetail', query: {userId: row.id} });
+            },
+            getData: async function() {
+                let that = this;
+                let params = {
+                    limit: that.pageSize,
+                    offset: that.pageSize*(that.page-1)
+                };
+                this.isLoading = true;
+                that.$axios.get('http://127.0.0.1:8000/api/assets/admin-user/', { params: params })
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.total = data.data.count ? data.data.count : 0;
+                            that.tableData = data.data.results.length > 0 ? data.data.results : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            deleteManageUserFunc: async function (index, row) {
+                let that = this;
+                let params = {
+                    id__in: row.id
+                };
+
+                const res = await that.$axios.delete('http://localhost:8000/api/assets/admin-user/', { params: params});
+                if (res.status === 204) {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功',
+                        duration: 1500
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '删除失败',
+                        duration: 1500
+                    });
+                }
+                that.search();
+            },
+            deleteManageUser: async function (index, row) {
+                let that = this;
+
+                that.$confirm('删除该记录?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.deleteManageUserFunc(index, row);
+                }).catch(() => {
+                    console.info('已取消删除');
+                });
             }
+        },
+        mounted: function () {
+            this.search();
         }
 	}
 </script>

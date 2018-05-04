@@ -36,6 +36,7 @@
                             <el-input
                                 v-model="addOrUpdateManageUserForm.password"
                                 size="medium"
+                                type="password"
                             >
                             </el-input>
                         </el-form-item>
@@ -62,7 +63,7 @@
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="备注: "
-                                      prop="remark"
+                                      prop="comment"
                         >
                             <el-input
                                 type="textarea"
@@ -71,13 +72,13 @@
                                 size="medium"
                                 resize="none"
                                 placeholder="请输入备注信息"
-                                v-model="addOrUpdateManageUserForm.remark">
+                                v-model="addOrUpdateManageUserForm.comment">
                             </el-input><br/>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" align="center">
                         <el-button>取 消</el-button>
-                        <el-button type="primary">确 定</el-button>
+                        <el-button type="primary" @click="submitForm('addOrUpdateManageUserForm')" :loading="isLoading">确 定</el-button>
                     </el-col>
                     <div class="clear"></div>
                 </div>
@@ -94,12 +95,13 @@
         },
 		data() {
 			return {
+                isLoading: false,
                 addOrUpdateManageUserForm: {
                     name: '',
                     userName: '',
                     password: '',
                     sshCode: '',
-                    remark: ''
+                    comment: ''
                 },
                 fileList: [
                     {
@@ -112,7 +114,22 @@
                     }
                 ],
                 rules: {
-
+                    name: [
+                        {required: true, message: '名称不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ],
+                    userName: [
+                        {required: true, message: '用户名不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ],
+                    password: [
+                        {required: true, message: '密码不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ],
+                    comment: [
+                        {required: false, trigger: 'blur,change'},
+                        {max: 128, message: '最大长度为200个字符', trigger: 'blur change'}
+                    ]
                 }
             }
 		},
@@ -128,6 +145,51 @@
             },
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+            submitForm(formName) {
+                let that = this;
+                that.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        switch(that.$route.query.addOrUpdate) {
+                            case 'add':
+                                this.add();
+                                break;
+                            case 'update':
+                                this.update();
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            add: async function () {
+                var that = this;
+                let params = {
+                    name: that.addOrUpdateManageUserForm.name,
+                    username: that.addOrUpdateManageUserForm.userName,
+                    _password: that.addOrUpdateManageUserForm.password,
+                    comment: that.addOrUpdateManageUserForm.comment,
+                };
+                that.isLoading = true;
+                const res = await that.$axios.post('http://localhost:8000/api/assets/admin-user/', params);
+                if (res.status === 201) {
+                    that.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.resetForm('addOrUpdateManageUserForm');
+                }
+            },
+            update: function () {
+
             }
         }
 	}

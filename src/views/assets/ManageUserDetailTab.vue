@@ -3,27 +3,27 @@
         <el-row>
             <el-col :span="16" class="pd10">
                 <div class="block-item" style="min-height: 300px;">
-                    <div class="block-title">admin.104</div>
+                    <div class="block-title">{{tableData.name}}</div>
                     <ul class="info-list">
                         <li class="info-item">
                             <span class="tips">名称:</span>
-                            <span class="detail">admin.104</span>
+                            <span class="detail">{{tableData.name}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">用户名:</span>
-                            <span class="detail">root</span>
+                            <span class="detail">{{tableData.username}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建日期:</span>
-                            <span class="detail">2018年4月11日 19:16</span>
+                            <span class="detail">{{tableData.date_created}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建者:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{tableData.created_by}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">备注:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{tableData.comment}}</span>
                         </li>
                     </ul>
                 </div>
@@ -41,7 +41,7 @@
         props: ['manageUserDetailVisible'],
 		data() {
 			return {
-
+                tableData: []
             }
 		},
         manageUserDetailVisible: function (newVal, oldVal) {
@@ -50,7 +50,33 @@
             }
         },
 		methods: {
-
+            getData: async function() {
+                let that = this;
+                let params = {
+                    id__in: that.$route.query.userId
+                };
+                this.isLoading = true;
+                that.$axios.get('http://127.0.0.1:8000/api/assets/admin-user/', { params: params })
+                    .then(function (response) {
+                        let data = response;
+                        console.info(data);
+                        if (data.status === 200) {
+                            that.tableData = data.data.results.length > 0 ? data.data.results[0] : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            }
+        },
+        mounted: function () {
+            this.getData();
         }
 	}
 </script>

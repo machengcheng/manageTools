@@ -2,44 +2,32 @@
     <section class="network-detail-tab-section">
         <el-row>
             <el-col :span="16" class="pd10">
-                <div class="block-item" style="min-height: 500px;">
-                    <div class="block-title">Administrator</div>
+                <div class="block-item" style="min-height: 400px;height: auto;">===={{gatewayDetailData}}
+                    <div class="block-title">{{gatewayDetailData.name}}</div>
                     <ul class="info-list">
                         <li class="info-item">
                             <span class="tips">名称:</span>
-                            <span class="detail">Administrator</span>
+                            <span class="detail">{{gatewayDetailData.name}}</span>
                         </li>
                         <li class="info-item">
-                            <span class="tips">用户名:</span>
-                            <span class="detail">admin</span>
+                            <span class="tips">资产:</span>
+                            <span class="detail">{{gatewayDetailData.asset_count}}</span>
                         </li>
                         <li class="info-item">
-                            <span class="tips">邮件:</span>
-                            <span class="detail">admin@mycomany.com</span>
+                            <span class="tips">网关:</span>
+                            <span class="detail">{{gatewayDetailData.gateway_count}}</span>
                         </li>
                         <li class="info-item">
-                            <span class="tips">角色:</span>
-                            <span class="detail">管理员</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="tips">失效日期:</span>
-                            <span class="detail">2088-03-24 16:57:53</span>
+                            <span class="tips">创建日期:</span>
+                            <span class="detail">{{gatewayDetailData.date_created}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建者:</span>
                             <span class="detail"></span>
                         </li>
                         <li class="info-item">
-                            <span class="tips">创建日期:</span>
-                            <span class="detail">2018-04-11 16:57:53</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="tips">最后登录:</span>
-                            <span class="detail">2018-04-19 17:40:37</span>
-                        </li>
-                        <li class="info-item">
                             <span class="tips">备注:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{gatewayDetailData.comment}}水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费水电费</span>
                         </li>
                     </ul>
                 </div>
@@ -57,16 +45,43 @@
         props: ['networkDetailVisible'],
 		data() {
 			return {
-
+                gatewayDetailData: []
             }
 		},
-        networkDetailVisible: function (newVal, oldVal) {
-            if(newVal != oldVal) {
-
+        watch: {
+            networkDetailVisible: function (newVal, oldVal) {
+                if (newVal != oldVal) {
+                    this.getData();
+                }
             }
         },
 		methods: {
-
+            getData: async function() {
+                let that = this;
+                let params = {
+                    id__in: that.$route.query.gatewayId
+                };
+                this.isLoading = true;
+                that.$axios.get('http://localhost:8000/api/assets/domain', { params: params})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.gatewayDetailData = data.data.results.length > 0 ? data.data.results[0] : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            }
+        },
+        mounted: function () {
+            this.getData();
         }
 	}
 </script>
@@ -107,6 +122,7 @@
                     display: inline-block;
                     min-width: 150px;
                     text-align: left;
+                    line-height: 1.6em;
                 }
                 img {
                     width: 80px;
@@ -119,6 +135,9 @@
             .info-item:last-of-type {
                 border: 0;
             }
+        }
+        .el-form-item__content {
+            line-height: 22px;
         }
         .pd10 {
             padding: 10px;

@@ -2,7 +2,7 @@
     <section class="add-or-update-user">
         <div class="box-title mb20">{{this.$route.query.addOrUpdate == 'add' ? '创建用户' : '更新用户'}}</div>
         <div class="box-content">
-            <el-form :model="addUserDialogForm" :rules="rules" ref="addUserDialogForm" class="demo-form-inline" label-width="120px">
+            <el-form :model="addOrUpdateUserForm" :rules="rules" ref="addOrUpdateUserForm" class="demo-form-inline" label-width="120px">
                 <div class="content">
                     <div class="item-split">
                         <span class="item-title">账户</span>
@@ -13,7 +13,7 @@
                             prop="name"
                         >
                             <el-input
-                                v-model="addUserDialogForm.name"
+                                v-model="addOrUpdateUserForm.name"
                                 size="medium"
                             >
                             </el-input>
@@ -25,7 +25,7 @@
                             prop="userName"
                         >
                             <el-input
-                                v-model="addUserDialogForm.userName"
+                                v-model="addOrUpdateUserForm.userName"
                                 size="medium"
                             >
                             </el-input>
@@ -37,22 +37,23 @@
                             prop="mail"
                         >
                             <el-input
-                                v-model="addUserDialogForm.mail"
+                                v-model="addOrUpdateUserForm.mail"
                                 size="medium"
                             >
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="12">========{{addOrUpdateUserForm.userGroup}}
                         <el-form-item
                             label="用户组: "
                             prop="userGroup"
                         >
                             <el-select
                                 id="userGroup"
-                                v-model="addUserDialogForm.userGroup"
+                                v-model="addOrUpdateUserForm.userGroup"
                                 multiple
                                 placeholder="请选择用户组"
+                                :disabled="!userGroupList.length"
                             >
                                 <el-option
                                     v-for="item in userGroupList"
@@ -78,9 +79,9 @@
                             v-if="this.$route.query.addOrUpdate == 'update'"
                         >
                             <el-input
-                                v-model="addUserDialogForm.password"
+                                v-model="addOrUpdateUserForm.password"
                                 size="medium"
-                                placeholder="请输入密码"ss
+                                placeholder="请输入密码"
                             >
                             </el-input>
                         </el-form-item>
@@ -95,7 +96,7 @@
                                 size="medium"
                                 resize="none"
                                 placeholder="ssh-rsa AAAA..."
-                                v-model="addUserDialogForm.pki">
+                                v-model="addOrUpdateUserForm.pki">
                             </el-input>
                         </el-form-item>
                     </el-col>
@@ -108,7 +109,7 @@
                             label="角色: "
                             prop="role"
                         >
-                            <el-select v-model="addUserDialogForm.role" placeholder="请选择" size="small">
+                            <el-select v-model="addOrUpdateUserForm.role" placeholder="请选择" size="small">
                                 <el-option
                                     v-for="item in roleList"
                                     :key="item.value"
@@ -123,14 +124,13 @@
                                       prop="endDate"
                         >
                             <el-date-picker
-                                v-model="addUserDialogForm.endDate"
+                                v-model="addOrUpdateUserForm.endDate"
                                 type="datetime"
                                 size="medium"
                                 placeholder="请选择失效日期"
                             >
                             </el-date-picker>
                         </el-form-item>
-                        ======{{addUserDialogForm.endDate}}
                     </el-col>
                     <div class="item-split">
                         <span class="item-title">个人信息</span>
@@ -141,7 +141,7 @@
                             prop="phone"
                         >
                             <el-input
-                                v-model="addUserDialogForm.phone"
+                                v-model="addOrUpdateUserForm.phone"
                                 size="medium"
                             >
                             </el-input>
@@ -153,7 +153,7 @@
                             prop="weixin"
                         >
                             <el-input
-                                v-model="addUserDialogForm.weixin"
+                                v-model="addOrUpdateUserForm.weixin"
                                 size="medium"
                             >
                             </el-input>
@@ -161,24 +161,23 @@
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="备注: "
-                                      prop="description"
+                                      prop="comment"
                         >
                             <el-input
                                 type="textarea"
                                 :rows="4"
-                                style="width: 500px;"
+                                style="width: 448px;"
                                 size="medium"
                                 resize="none"
                                 placeholder="请输入备注信息"
-                                v-model="addUserDialogForm.description">
+                                v-model="addOrUpdateUserForm.comment">
                             </el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" align="center">
                         <el-button>取 消</el-button>
-                        <el-button type="primary" @click="add">确 定</el-button>
+                        <el-button type="primary" @click="submitForm('addOrUpdateUserForm')">确 定</el-button>
                     </el-col>
-                    --------{{resultsList}}
                     <div class="clear"></div>
                 </div>
             </el-form>
@@ -195,80 +194,49 @@
 		data() {
 			return {
                 addOrUpdate: 'add',
-                addUserDialogForm: {
+                userInfo: [],
+                addOrUpdateUserForm: {
                     name: '',
                     userName: '',
                     mail: '',
-                    userGroup: '',
+                    userGroup: [],
                     role: '',
                     endDate: '',
                     phone: '',
                     password: '',
                     pki: '',
                     weixin: '',
-                    description: ''
+                    comment: ''
                 },
                 resultsList: '',
                 roleList: [
                     {
-                        value: '1',
+                        value: 'Admin',
                         label: '管理员'
                     },
                     {
-                        value: '2',
+                        value: 'User',
                         label: '用户'
                     }
                 ],
                 userGroupList: [
-                    {
-                        value: '1',
-                        label: 'Default'
-                    },
-                    {
-                        value: '2',
-                        label: 'aa'
-                    },
-                    {
-                        value: '3',
-                        label: 'bb'
-                    },
-                    {
-                        value: '4',
-                        label: 'cc'
-                    },
-                    {
-                        value: '5',
-                        label: 'dd'
-                    },
-                    {
-                        value: '6',
-                        label: 'ee'
-                    },
-                    {
-                        value: '7',
-                        label: 'ff'
-                    },
-                    {
-                        value: '8',
-                        label: 'gg'
-                    },
-                    {
-                        value: '9',
-                        label: 'hh'
-                    }
+
                 ],
                 rules: {
                     name: [
-                        {required: true, message: '名称不能为空', trigger: 'blur,change'}
+                        {required: true, message: '名称不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
                     ],
                     userName: [
-                        {required: true, message: '用户名不能为空', trigger: 'blur,change'}
+                        {required: true, message: '用户名不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
                     ],
                     mail: [
-                        {required: true, message: '邮件不能为空', trigger: 'blur,change'}
+                        {required: true, message: '邮件不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
                     ],
                     userGroup: [
-                        {required: true, message: '用户组不能为空', trigger: 'blur,change'}
+                        {required: false, message: '用户组不能为空', trigger: 'blur,change'}
                     ],
                     role: [
                         {required: true, message: '角色不能为空', trigger: 'blur,change'}
@@ -277,10 +245,16 @@
                         {required: true, message: '失效日期不能为空', trigger: 'blur,change'}
                     ],
                     phone: [
-                        {required: false, trigger: 'blur,change'}
+                        {required: false, message: '手机不能为空', trigger: 'blur,change'},
+                        {min: 11, max: 11, message: '长度为11个字符', trigger: 'blur change'}
                     ],
                     weixin: [
-                        {required: false, trigger: 'blur,change'}
+                        {required: false, trigger: 'blur,change'},
+                        {max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ],
+                    comment: [
+                        {required: false, trigger: 'blur,change'},
+                        {max: 128, message: '最大长度为200个字符', trigger: 'blur change'}
                     ]
                 }
             }
@@ -303,32 +277,137 @@
                         fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
                 return fmt;
             },
-            formatDate: function (cellValue) {alert(cellValue);
+            formatDate: function (cellValue) {
                 return this.format('yyyy-MM-dd hh:mm:ss', new Date(cellValue));
                 // return this.format('yyyy-MM-dd', new Date(cellValue));
+            },
+            getUserGroups: function () {
+                let that = this;
+                this.$axios.get('http://localhost:8000/api/users/group', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                that.userGroupList.push({
+                                    value: data.data.results[0].id,
+                                    label: data.data.results[0].name
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            getUserDetail: function () {
+                let that = this;
+                let params = {
+                    id: that.$route.query.userId
+                };
+                that.$axios.get('http://localhost:8000/api/users/user', { params: params})
+                    .then(function (response) {
+                        let data = response;
+                        if(data.status === 200) {
+                            that.userInfo = data.data.results.length > 0 ? data.data.results[0] : [];
+                            that.addOrUpdateUserForm.name = that.userInfo.name;
+                            that.addOrUpdateUserForm.userName = that.userInfo.username;
+                            that.addOrUpdateUserForm.mail = that.userInfo.email;
+                            that.addOrUpdateUserForm.userGroup.push(that.userInfo.groups[0]);
+                            that.addOrUpdateUserForm.role = that.userInfo.role;
+                            that.addOrUpdateUserForm.endDate = that.userInfo.date_expired;
+                            that.addOrUpdateUserForm.phone = that.userInfo.phone;
+                            that.addOrUpdateUserForm.weixin = that.userInfo.wechat;
+                            that.addOrUpdateUserForm.comment = that.userInfo.comment;
+                        }
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            submitForm(formName) {
+                let that = this;
+                that.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        switch(that.$route.query.addOrUpdate) {
+                            case 'add':
+                                this.add();
+                                break;
+                            case 'update':
+                                this.update();
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
             },
             add: async function () {
                 var that = this;
                 let params = {
-                    name: 'mcc0091',
-                    username: '马成成0091',
-                    password: '123456',
-                    email: '32221789531@qq.com',
-                    groups: ["10c95fe6-cc66-444a-a860-2b35cf33f653"],
-                    role: 'Admin',
-                    date_expired: that.formatDate(that.addUserDialogForm.endDate),
-                    phone: '13800138019',
-                    wechat: 'weixin03207691852',
-                    comment: '我的评论12812971'
+                    name: that.addOrUpdateUserForm.name,
+                    username: that.addOrUpdateUserForm.userName,
+                    password: that.addOrUpdateUserForm.password,
+                    email: that.addOrUpdateUserForm.mail,
+                    groups: that.addOrUpdateUserForm.userGroup,
+                    role: that.addOrUpdateUserForm.role,
+                    date_expired: that.formatDate(that.addOrUpdateUserForm.endDate),
+                    phone: that.addOrUpdateUserForm.phone,
+                    wechat: that.addOrUpdateUserForm.weixin,
+                    comment: that.addOrUpdateUserForm.comment,
                 };
                 this.isLoading = true;
                 const res = await that.$axios.post('http://localhost:8000/api/users/user/', params);
                 if (res.status === 201) {
-                    this.$message({
+                    that.$message({
                         message: '创建成功',
                         type: 'success'
                     });
+                    this.isLoading = false;
+                    that.resetForm('addOrUpdateUserForm');
                 }
+            },
+            update: async function(){
+                var that = this;
+                let params = {
+                    name: that.addOrUpdateUserForm.name,
+                    username: that.addOrUpdateUserForm.userName,
+                    password: that.addOrUpdateUserForm.password,
+                    email: that.addOrUpdateUserForm.mail,
+                    groups: that.addOrUpdateUserForm.userGroup,
+                    role: that.addOrUpdateUserForm.role,
+                    public_key: that.addOrUpdateUserForm.pki,
+                    date_expired: that.formatDate(that.addOrUpdateUserForm.endDate),
+                    phone: that.addOrUpdateUserForm.phone,
+                    wechat: that.addOrUpdateUserForm.weixin,
+                    comment: that.addOrUpdateUserForm.comment,
+                };
+
+                const res = await that.$axios.put('http://localhost:8000/api/users/user/', params);
+                that.$message({
+                    message: '修改成功',
+                    type: 'success'
+                });
+            }
+        },
+        mounted: function () {
+            this.getUserGroups();
+            if (this.$route.query.addOrUpdate === 'update') {
+                this.getUserDetail();
             }
         }
 	}

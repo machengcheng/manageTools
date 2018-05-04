@@ -3,7 +3,7 @@
         <div class="box-title">登录日志</div>
         <div class="box-operate">
             <el-button  type="primary" size="small" @click="search" class="fr">查询</el-button>
-            <el-input v-model="searchKey" size="small" class="searchKey wat fr mr20" placeholder="请输入查询内容"></el-input>
+            <el-input v-model="username" size="small" class="searchKey wat fr mr20" placeholder="请输入查询内容"></el-input>
         </div>
         <div class="box-content">
             <el-table
@@ -15,14 +15,14 @@
                 @selection-change="handleSelectionChange"
                 >
                 <el-table-column
-                    prop="id"
+                    type="index"
                     label="ID"
                     sortable
                     width="60"
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="name"
+                    prop="username"
                     label="用户名"
                     sortable
                     show-overflow-tooltip
@@ -36,7 +36,7 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="agent"
+                    prop="user_agent"
                     label="Agent"
                     sortable
                     show-overflow-tooltip
@@ -58,7 +58,7 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="date"
+                    prop="datetime"
                     label="日期"
                     sortable
                     show-overflow-tooltip
@@ -66,7 +66,7 @@
                 </el-table-column>
             </el-table>
             <el-col :span="24" class="toolbar">
-                <el-pagination layout="total, prev, pager, next" background @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
+                <el-pagination layout="sizes, total, prev, pager, next" background @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
             <div class="clear"></div>
@@ -82,34 +82,63 @@
         },
 		data() {
 			return {
-                searchKey: '',
-                tableData: [
-                    {
-                        id: 1,
-                        name: 'admin',
-                        type: 'Web',
-                        agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36',
-                        ip: '101.221.138.211',
-                        city: '西安',
-                        date: '2018年4月20日 10:25'
-                    }
-                ],
+                username: '',
+                tableData: [],
+                multipleSelection: [],
                 isLoading: false,
                 total: 0,
-                pageSize: 1,
+                pageSize: 10,
+                pageSizes: [10, 20, 30, 40, 50],
                 page: 1
             }
 		},
 		methods: {
             search: function () {
-
+                this.page = 1;
+                this.getData();
             },
             handleSelectionChange: function () {
-
+                this.multipleSelection = val;
             },
-            handleCurrentChange: function () {
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.search();
+            },
+            handleCurrentChange(val) {
+                this.page = val;
+                this.getData();
+            },
+            getData: async function() {
+                let that = this;
+                let params = {
+                    username: that.username,
+                    limit: that.pageSize,
+                    offset: that.pageSize*(that.page-1),
+                    type: 'get'
 
+                };
+                this.isLoading = true;
+                that.$axios.get('http://localhost:8000/api/users/loginlog', { params: params})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.total = data.data.count ? data.data.count : 0;
+                            that.tableData = data.data.results.length > 0 ? data.data.results : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
             }
+        },
+        mounted: function () {
+            this.search();
         }
 	}
 </script>

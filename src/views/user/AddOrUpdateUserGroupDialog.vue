@@ -61,7 +61,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" @click="closeDialog">确 定</el-button>
+                <el-button type="primary" :loading="isLoading" @click="submitForm('addUserGroupDialogForm')">确 定</el-button>
             </div>
         </el-dialog>
     </section>
@@ -73,52 +73,16 @@
 		components: {
 
         },
-        props: ['addOrUpdateUserGroupDialogVisible', 'addOrUpdate'],
+        props: ['addOrUpdateUserGroupDialogVisible', 'addOrUpdate', 'updateData', 'updateStatus'],
 		data() {
 			return {
+			    isLoading: false,
                 addUserGroupDialogForm: {
                     name: '',
-                    user: '',
+                    user: [],
                     remark: ''
                 },
-                userList: [
-                    {
-                        value: '1',
-                        label: 'Default'
-                    },
-                    {
-                        value: '2',
-                        label: 'aa'
-                    },
-                    {
-                        value: '3',
-                        label: 'bb'
-                    },
-                    {
-                        value: '4',
-                        label: 'cc'
-                    },
-                    {
-                        value: '5',
-                        label: 'dd'
-                    },
-                    {
-                        value: '6',
-                        label: 'ee'
-                    },
-                    {
-                        value: '7',
-                        label: 'ff'
-                    },
-                    {
-                        value: '8',
-                        label: 'gg'
-                    },
-                    {
-                        value: '9',
-                        label: 'hh'
-                    }
-                ],
+                userList: [],
                 rules: {
                     name: [
                         {required: true, message: '名称不能为空', trigger: 'blur,change'}
@@ -126,13 +90,123 @@
                 }
             }
 		},
+        watch: {
+            updateStatus: function (newVal, oldVal) {
+                if(newVal != oldVal) {
+                    this.getUserGroupDetail();
+                }
+            }
+        },
 		methods: {
             closeDialog(){
                 this.$emit('addOrUpdateUserGroupDialogEvent', this.addOrUpdateUserGroupDialogVisible);
             },
             initDialogData: function () {
 
+            },
+            submitForm(formName) {
+                let that = this;
+                that.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        switch(that.addOrUpdate) {
+                            case 'add':
+                                this.add();
+                                break;
+                            case 'update':
+                                this.update();
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            getUserList: function () {
+                let that = this;
+                let params = {
+
+                };
+                that.$axios.get('http://localhost:8000/api/users/user', params)
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                data.data.results.forEach(function (item) {
+                                   that.userList.push({
+                                       value: item.id,
+                                       label: item.name
+                                   });
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            getUserGroupDetail: function () {
+                this.addUserGroupDialogForm.name  = this.updateData.name;
+                this.addUserGroupDialogForm.user  = this.updateData.users;
+                this.addUserGroupDialogForm.comment  = this.updateData.comment;
+            },
+            add: async function () {
+                var that = this;
+                let params = {
+                    name: that.addUserGroupDialogForm.name,
+                    users: that.addUserGroupDialogForm.user,
+                    comment: that.addUserGroupDialogForm.remark
+                };
+                this.isLoading = true;
+                const res = await that.$axios.post('http://localhost:8000/api/users/group/', params);
+                if (res.status === 201) {
+                    that.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
+                    this.isLoading = false;
+                    that.resetForm('addUserGroupDialogForm');
+                    that.closeDialog();
+                }
+            },
+            update: async function () {
+                var that = this;
+                let params = {
+                    name: that.addUserGroupDialogForm.name,
+                    users: that.addUserGroupDialogForm.user,
+                    comment: that.addUserGroupDialogForm.remark,
+                };
+
+                this.isLoading = true;
+
+                const res = await that.$axios.put('http://localhost:8000/api/users/group/', params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '修改成功',
+                        type: 'success'
+                    });
+                } else {
+                    that.$message({
+                        message: '修改失败',
+                        type: 'info'
+                    });
+                }
+                this.isLoading = false;
             }
+        },
+        mounted: function () {
+            this.getUserList();
+            this.getUserGroupDetail();
         }
 	}
 </script>

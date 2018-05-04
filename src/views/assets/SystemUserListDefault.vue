@@ -30,7 +30,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="userName"
+                    prop="username"
                     label="用户名"
                     width="120"
                 >
@@ -42,19 +42,19 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="assets"
+                    prop="assets_amount"
                     label="资产"
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="link"
+                    prop="reachable_amount"
                     label="可连接"
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="notArrive"
+                    prop="unreachable_amount"
                     label="不可达"
                     show-overflow-tooltip
                 >
@@ -66,7 +66,7 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="remark"
+                    prop="comment"
                     label="备注"
                     show-overflow-tooltip
                 >
@@ -89,6 +89,7 @@
                             type="danger"
                             size="mini"
                             plain
+                            @click="deleteSystemUser"
                         >
                             删除
                         </el-button>
@@ -96,9 +97,10 @@
                 </el-table-column>
             </el-table>
             <el-col :span="24" class="toolbar">
-                <el-pagination layout="total, prev, pager, next" background @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
+                <el-pagination layout="sizes, total, prev, pager, next" background @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-sizes="pageSizes" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
+            <div class="clear"></div>
         </div>
     </section>
 </template>
@@ -112,30 +114,26 @@
 		data() {
 			return {
                 searchKey: '',
-                tableData: [
-                    {
-                        name: 'admin.104',
-                        userName: 'root',
-                        protocol: 'ssh',
-                        assets: 2,
-                        link: 1,
-                        notArrive: 1,
-                        ratio: '50.0%',
-                        remark: '备注'
-                    }
-                ],
+                tableData: [],
                 isLoading: false,
                 total: 0,
+                pageSizes: [1, 2, 3, 4, 5],
                 pageSize: 1,
                 page: 1
             }
 		},
 		methods: {
             handleSelectionChange: function () {
-
+                this.page = 1;
+                this.getData();
             },
-            handleCurrentChange: function () {
-
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.search();
+            },
+            handleCurrentChange(val) {
+                this.page = val;
+                this.getData();
             },
             search: function () {
 
@@ -148,7 +146,39 @@
             },
             systemUserDetail: function () {
                 this.$router.push({ path: '/home/systemUserList/SystemUserDetail' });
+            },
+            deleteSystemUser: function () {
+
+            },
+            getData: async function() {
+                let that = this;
+                let params = {
+                    limit: that.pageSize,
+                    offset: that.pageSize*(that.page-1),
+                    type: 'get'
+                };
+                this.isLoading = true;
+                that.$axios.get('http://127.0.0.1:8000/api/assets/admin-user/', { params: params})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.total = data.data.count ? data.data.count : 0;
+                            that.tableData = data.data.results.length > 0 ? data.data.results : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
             }
+        },
+        mounted: function () {
+            this.getData();
         }
 	}
 </script>

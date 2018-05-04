@@ -45,6 +45,9 @@
                         break;
                 }
             }
+        },
+        mounted: function () {
+            this.tabType = this.$route.query.tabType ? this.$route.query.tabType : 'network-detail';
         }
 	}
 </script>

@@ -99,6 +99,19 @@ function checkCode(res){
     return res.data;
 }
 
+export const oRemove = (url , params) => {
+    return new Promise((resolve,reject) => {
+        axios.delete(url,params)
+            .then(res => {
+                resolve(res.data)
+            },err => {
+                reject(err)
+            }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
 export default {
     post(url, data) {
         return axios({
@@ -131,5 +144,23 @@ export default {
                 return checkCode(res);
             }
         )
+    },
+    //封装删除数据
+    deleteRecord(url, params){
+        return axios.delete({
+            method: 'delete',
+            url: url,
+            params, //get请求时带的参数
+            timeout: 30000
+        }).then(
+            (res) => {
+                return checkStatus(res);
+            }
+        ).then(
+            (res) => {
+                return checkCode(res);
+            }
+        )
     }
 }
+

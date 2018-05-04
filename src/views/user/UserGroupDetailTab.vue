@@ -1,13 +1,13 @@
 <template>
     <section class="user-group-detail-tab-section">
-        <el-row style="padding: 0 10px;">
+        <el-row style="display: none;padding: 0 10px;">
             <el-col :span="24">
                 <div class="box-operate pd0">
                     <el-button  type="primary" size="mini" class="fr">编辑</el-button>
                     <el-button  type="danger" size="mini" class="fr mr20">删除</el-button>
                 </div>
             </el-col>
-        </el-row>
+        </el-row>-----{{userGroupDetailData}}
         <el-row>
             <el-col :span="16" class="pd10">
                 <div class="block-item" style="min-height: 272px;">
@@ -76,11 +76,36 @@
         },
 		data() {
 			return {
-
+                userGroupDetailData: []
             }
 		},
 		methods: {
-
+            getData: async function() {
+                let that = this;
+                let params = {
+                    id__in: that.$route.query.userId
+                };
+                this.isLoading = true;
+                that.$axios.get('http://localhost:8000/api/users/group/', { params: params})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.userGroupDetailData = data.data.results.length > 0 ? data.data.results : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            }
+        },
+        mounted: function () {
+            this.getData();
         }
 	}
 </script>

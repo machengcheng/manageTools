@@ -44,7 +44,7 @@
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="备注: "
-                                      prop="remark"
+                                      prop="comment"
                         >
                             <el-input
                                 type="textarea"
@@ -53,7 +53,7 @@
                                 size="medium"
                                 resize="none"
                                 placeholder="请输入备注信息"
-                                v-model="addOrUpdateNetworkDialogForm.remark">
+                                v-model="addOrUpdateNetworkDialogForm.comment">
                             </el-input>
                         </el-form-item>
                     </el-col>
@@ -61,7 +61,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" @click="closeDialog">确 定</el-button>
+                <el-button type="primary" :loading="isLoading" @click="submitForm('addOrUpdateNetworkDialogForm')">确 定</el-button>
             </div>
         </el-dialog>
     </section>
@@ -76,24 +76,19 @@
         props: ['addOrUpdateNetworkDialogVisible', 'addOrUpdate'],
 		data() {
 			return {
+			    isLoading: false,
                 addOrUpdateNetworkDialogForm: {
                     name: '',
-                    assets: '',
-                    remark: ''
+                    assets: [],
+                    comment: ''
                 },
-                assetsList: [
-                    {
-                        value: '1',
-                        label: '点1'
-                    },
-                    {
-                        value: '2',
-                        label: '104'
-                    }
-                ],
+                assetsList: [],
                 rules: {
                     name: [
                         {required: true, message: '名称不能为空', trigger: 'blur,change'}
+                    ],
+                    assets: [
+                        {required: true, message: '资产不能为空', trigger: 'blur,change'}
                     ]
                 }
             }
@@ -104,7 +99,80 @@
             },
             initDialogData: function () {
 
+            },
+            submitForm(formName) {
+                let that = this;
+                that.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        switch(that.addOrUpdate) {
+                            case 'add':
+                                this.add();
+                                break;
+                            case 'update':
+                                this.update();
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+
+            getAssetsList: function () {
+                let that = this;
+                this.$axios.get('http://localhost:8000/api/assets/asset', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                data.data.results.forEach(function (item) {
+                                    that.assetsList.push({
+                                        value: item.id,
+                                        label: item.hostname
+                                    });
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            add: async function () {
+                var that = this;
+                let params = {
+                    name: that.addOrUpdateNetworkDialogForm.name,
+                    asset: that.addOrUpdateNetworkDialogForm.assets.join(','),
+                    comment: that.addOrUpdateNetworkDialogForm.comment,
+                };
+                that.isLoading = true;
+                const res = await that.$axios.post('http://localhost:8000/api/assets/domain/', params);
+                if (res.status === 201) {
+                    that.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.resetForm('addOrUpdateNetworkDialogForm');
+                    that.closeDialog();
+                }
+            },
+            update: function () {
+
             }
+        },
+        mounted: function () {
+            this.getAssetsList();
         }
 	}
 </script>
