@@ -87,6 +87,7 @@
                 <el-pagination layout="total, prev, pager, next" background @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
+            <div class="clear"></div>
         </div>
     </section>
 </template>

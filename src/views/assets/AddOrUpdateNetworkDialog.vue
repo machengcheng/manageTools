@@ -86,9 +86,6 @@
                 rules: {
                     name: [
                         {required: true, message: '名称不能为空', trigger: 'blur,change'}
-                    ],
-                    assets: [
-                        {required: true, message: '资产不能为空', trigger: 'blur,change'}
                     ]
                 }
             }

@@ -75,7 +75,7 @@
                             type="primary"
                             size="mini"
                             plain
-                            @click="updateManageUser"
+                            @click="updateManageUser(scope.$index, scope.row)"
                         >
                             更新
                         </el-button>
@@ -122,7 +122,7 @@
                 this.page = 1;
                 this.getData();
             },
-            handleSelectionChange: function (val) {
+            handleSelectionChange: function () {
                 this.multipleSelection = val;
             },
             handleSizeChange(val) {
@@ -136,8 +136,8 @@
             createManageUser: function () {
                 this.$router.push({ path: '/home/manageUserList/addOrUpdateManageUser', query: {addOrUpdate: 'add'}});
             },
-            updateManageUser: function () {
-                this.$router.push({ path: '/home/manageUserList/addOrUpdateManageUser', query: {addOrUpdate: 'update'}});
+            updateManageUser: function (index, row) {
+                this.$router.push({ path: '/home/manageUserList/addOrUpdateManageUser', query: {addOrUpdate: 'update', userId: row.id}});
             },
             manageUserDetail: function (index, row) {
                 this.$router.push({ path: '/home/manageUserList/manageUserDetail', query: {userId: row.id} });

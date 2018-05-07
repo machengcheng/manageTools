@@ -103,6 +103,7 @@
                     sshCode: '',
                     comment: ''
                 },
+                manageUserInfo: [],
                 fileList: [
                     {
                         name: 'food.jpeg',
@@ -169,6 +170,33 @@
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             },
+            getManageUserDetail: async function() {
+                let that = this;
+                let params = {
+                    id__in: that.$route.query.userId
+                };
+                this.isLoading = true;
+                that.$axios.get('http://127.0.0.1:8000/api/assets/admin-user/', { params: params })
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.manageUserInfo = data.data.results.length > 0 ? data.data.results[0] : [];
+                            that.addOrUpdateManageUserForm.name = that.manageUserInfo.name;
+                            that.addOrUpdateManageUserForm.userName = that.manageUserInfo.username;
+                            that.addOrUpdateManageUserForm.password = that.manageUserInfo._password;
+                            that.addOrUpdateManageUserForm.comment = that.manageUserInfo.comment;
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
             add: async function () {
                 var that = this;
                 let params = {
@@ -188,8 +216,30 @@
                     that.resetForm('addOrUpdateManageUserForm');
                 }
             },
-            update: function () {
+            update: async function () {
+                var that = this;
+                let params = {
+                    name: that.addOrUpdateManageUserForm.name,
+                    username: that.addOrUpdateManageUserForm.userName,
+                    _password: that.addOrUpdateManageUserForm.password,
+                    comment: that.addOrUpdateManageUserForm.comment,
+                };
 
+                that.isLoading = true;
+                const res = await that.$axios.patch('http://localhost:8000/api/assets/admin-user/' + that.$route.query.userId + '/', params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.getManageUserDetail();
+                }
+            }
+        },
+        mounted: function () {
+		    if (this.$route.query.addOrUpdate === 'update') {
+                this.getManageUserDetail();
             }
         }
 	}
