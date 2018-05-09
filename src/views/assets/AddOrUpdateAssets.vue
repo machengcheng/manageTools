@@ -46,16 +46,16 @@
                     <el-col :span="12">
                         <el-form-item
                             label="系统平台: "
-                            prop="system"
+                            prop="platform"
                         >
                             <el-select
                                 id="userGroup"
-                                v-model="addOrUpdateAssetsForm.system"
+                                v-model="addOrUpdateAssetsForm.platform"
                                 filterable
                                 placeholder="请选择系统平台"
                             >
                                 <el-option
-                                    v-for="item in systemList"
+                                    v-for="item in platformList"
                                     :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
@@ -66,10 +66,10 @@
                     <el-col :span="12">
                         <el-form-item
                             label="公网IP: "
-                            prop="publicNetIp"
+                            prop="publicIp"
                         >
                             <el-input
-                                v-model="addOrUpdateAssetsForm.publicNetIp"
+                                v-model="addOrUpdateAssetsForm.publicIp"
                                 size="medium"
                             >
                             </el-input>
@@ -131,6 +131,7 @@
                                 id="userGroup"
                                 v-model="addOrUpdateAssetsForm.nodeManage"
                                 filterable
+                                multiple
                                 placeholder="请选择节点管理"
                             >
                                 <el-option
@@ -155,6 +156,7 @@
                                 id="userGroup"
                                 v-model="addOrUpdateAssetsForm.label"
                                 multiple
+                                multiple
                                 placeholder="请选择标签"
                             >
                                 <el-option
@@ -172,7 +174,7 @@
                     </div>
                     <el-col :span="24">
                         <el-form-item label="备注: "
-                                      prop="remark"
+                                      prop="comment"
                         >
                             <el-input
                                 type="textarea"
@@ -181,14 +183,14 @@
                                 size="medium"
                                 resize="none"
                                 placeholder="请输入备注信息"
-                                v-model="addOrUpdateAssetsForm.remark">
+                                v-model="addOrUpdateAssetsForm.comment">
                             </el-input><br/>
-                            <el-checkbox v-model="addOrUpdateAssetsForm.activate">激活</el-checkbox>
+                            <el-checkbox v-model="addOrUpdateAssetsForm.is_active">激活</el-checkbox>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" align="center">
                         <el-button>取 消</el-button>
-                        <el-button type="primary">确 定</el-button>
+                        <el-button type="primary" :loading="isLoading" @click="submitForm('addOrUpdateAssetsForm')">确 定</el-button>
                     </el-col>
                     <div class="clear"></div>
                 </div>
@@ -205,84 +207,228 @@
         },
 		data() {
 			return {
+                isLoading: false,
                 addOrUpdateAssetsForm: {
                     hostName: '',
                     ip: '',
                     port: '',
-                    system: '',
-                    publicNetIp: '',
+                    platform: '',
+                    publicIp: '',
                     network: '',
                     manageUser: '',
                     nodeManage: '',
                     label: '',
-                    remark: '',
-                    activate: true
+                    comment: '',
+                    is_active: true
                 },
-                systemList: [
+                platformList: [
                     {
-                        value: '1',
+                        value: 'Linux',
                         label: 'Linux'
                     },
                     {
-                        value: '2',
+                        value: 'Unix',
                         label: 'Unix'
                     },
                     {
-                        value: '3',
+                        value: 'MacOS',
                         label: 'MacOS'
                     },
                     {
-                        value: '4',
+                        value: 'BSD',
                         label: 'BSD'
                     },
                     {
-                        value: '5',
+                        value: 'Windows',
                         label: 'Windows'
                     },
                     {
-                        value: '6',
+                        value: 'Other',
                         label: 'Other'
                     }
                 ],
-                networkList: [
-                    {
-                        value: '1',
-                        label: 'yeexun'
-                    }
-                ],
-                manageUserList: [
-                    {
-                        value: '1',
-                        label: 'admin'
-                    },
-                    {
-                        value: '2',
-                        label: 'root'
-                    }
-                ],
-                nodeManageList: [
-                    {
-                        value: '1',
-                        label: 'ROOT'
-                    }
-                ],
-                labelList: [
-                    {
-                        value: '1',
-                        label: '111'
-                    },
-                    {
-                        value: '2',
-                        label: '222'
-                    }
-                ],
+                networkList: [],
+                manageUserList: [],
+                nodeManageList: [],
+                labelList: [],
                 rules: {
-
+                    hostName: [
+                        {required: true, message: '主机名不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ],
+                    ip: [
+                        {required: true, message: 'ip地址不能为空', trigger: 'blur,change'},
+                        {pattern: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/, message: '请输入正确的ip地址', trigger: 'blur change'}
+                    ],
+                    port: [
+                        {required: true, message: '端口不能为空', trigger: 'blur,change'},
+                        {pattern: /^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$/, message: '请输入正确的端口号', trigger: 'blur change'}
+                    ],
+                    platform: [
+                        {required: true, message: '请选择系统平台', trigger: 'blur,change'}
+                    ],
+                    publicIp: [
+                        {pattern: /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/, message: '请输入正确的ip地址', trigger: 'blur change'}
+                    ]
                 }
             }
 		},
 		methods: {
+            submitForm(formName) {
+                let that = this;
+                that.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        switch(that.$route.query.addOrUpdate) {
+                            case 'add':
+                                that.add();
+                                break;
+                            case 'update':
+                                that.update();
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            getNetworkList: function () {
+                let that = this;
+                this.$axios.get('http://localhost:8000/api/assets/domain/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                data.data.results.forEach(function (item) {
+                                    that.networkList.push({
+                                        value: item.id,
+                                        label: item.name
+                                    });
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            getManageUserList: function () {
+                let that = this;
+                this.$axios.get('http://localhost:8000/api/assets/domain/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                data.data.results.forEach(function (item) {
+                                    that.manageUserList.push({
+                                        value: item.id,
+                                        label: item.name
+                                    });
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            getNodeList: function () {
+                let that = this;
+                this.$axios.get('http://localhost:8000/api/assets/nodes/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                data.data.results.forEach(function (item) {
+                                    that.nodeManageList.push({
+                                        value: item.id,
+                                        label: item.value
+                                    });
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            getLabelList: function () {
+                let that = this;
+                this.$axios.get('http://localhost:8000/api/assets/labels/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                data.data.results.forEach(function (item) {
+                                    that.labelList.push({
+                                        value: item.id,
+                                        label: item.value
+                                    });
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            add: async function () {
+                let that = this;
+                let params = {
+                    hostname: that.addOrUpdateAssetsForm.hostName,
+                    ip: that.addOrUpdateAssetsForm.ip,
+                    port: that.addOrUpdateAssetsForm.port,
+                    public_ip: that.addOrUpdateAssetsForm.publicIp,
+                    platform: that.addOrUpdateAssetsForm.platform,
+                    domain: that.addOrUpdateAssetsForm.network,
+                    admin_user: that.addOrUpdateAssetsForm.manageUser,
+                    nodes: that.addOrUpdateAssetsForm.nodeManage.join(','),
+                    labels: that.addOrUpdateAssetsForm.label.join(','),
+                    is_active: that.addOrUpdateAssetsForm.is_active,
+                    comment: that.addOrUpdateAssetsForm.comment
+                };
 
+                this.isLoading = true;
+                const res = await that.$axios.post('http://localhost:8000/api/assets/asset/', params);
+                if (res.status === 201) {
+                    that.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
+                    this.isLoading = false;
+                    that.resetForm('addOrUpdateAssetsForm');
+                }
+            },
+            update: function () {
+                alert('update');
+            }
+        },
+        mounted: function () {
+            this.getNetworkList();
+            this.getManageUserList();
+            this.getNodeList();
+            this.getLabelList();
         }
 	}
 </script>

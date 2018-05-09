@@ -23,13 +23,13 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="hostName"
+                    prop="hostname"
                     label="主机名"
                     sortable
                     show-overflow-tooltip
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="assetsDetail" size="small">{{ scope.row.hostName }}</el-button>
+                        <el-button type="text" @click="assetsDetail" size="small">{{ scope.row.hostname }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -47,19 +47,25 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="activating"
+                    prop="is_active"
                     label="激活中"
                     sortable
                     show-overflow-tooltip
                 >
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="assetsDetail" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop="link"
+                    prop="is_connective"
                     label="可连接"
                     sortable
                     width="130"
                     show-overflow-tooltip
                 >
+                    <template slot-scope="scope">
+                        <el-button type="text" @click="assetsDetail" size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     label="动作"
@@ -86,7 +92,7 @@
                 </el-table-column>
             </el-table>
             <el-col :span="24" class="toolbar">
-                <el-pagination layout="total, prev, pager, next" background @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
+                <el-pagination layout="total, prev, pager, next" background :current-page="page" @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
             <div class="clear"></div>
@@ -122,15 +128,7 @@
 			return {
                 searchKey: '',
                 operateType: '',
-                tableData: [
-                    {
-                        hostName: '点1',
-                        ip: '10.221.121.1',
-                        hardware: '',
-                        activating: '√',
-                        link: ''
-                    }
-                ],
+                tableData: [],
                 isLoading: false,
                 total: 0,
                 pageSize: 1,
@@ -177,7 +175,35 @@
             },
             assetsDetail: function () {
                 this.$router.push({ path: '/home/assetsList/assetsDetail' });
+            },
+            getData: async function() {
+                let that = this;
+                let params = {
+                    limit: that.pageSize,
+                    offset: that.pageSize*(that.page-1)
+                };
+                that.isLoading = true;
+                that.$axios.get('http://localhost:8000/api/assets/asset/', { params: params })
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.total = data.data.count ? data.data.count : 0;
+                            that.tableData = data.data.results.length > 0 ? data.data.results : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
             }
+        },
+        mounted: function () {
+            this.getData();
         }
 	}
 </script>

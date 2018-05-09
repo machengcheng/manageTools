@@ -9,7 +9,7 @@
             :open="initDialogData()"
             >
             <el-form :model="addUserGroupDialogForm" :rules="rules" ref="addUserGroupDialogForm" class="demo-form-inline" label-width="120px">
-                <div class="content">
+                <div class="content">==={{datas}}
                     <el-col :span="12">
                         <el-form-item
                             label="名称: "
@@ -82,6 +82,7 @@
                     user: [],
                     remark: ''
                 },
+                datas: [],
                 userList: [],
                 rules: {
                     name: [
@@ -156,9 +157,15 @@
                     });
             },
             getUserGroupDetail: function () {
-                this.addUserGroupDialogForm.name  = this.updateData.name;
-                this.addUserGroupDialogForm.user  = this.updateData.users;
-                this.addUserGroupDialogForm.comment  = this.updateData.comment;
+                let that = this;
+                that.datas = that.updateData;
+                that.addUserGroupDialogForm.name  = that.updateData.name;
+                if (that.updateData.users.length > 0) {
+                    that.updateData.users.forEach(function (item) {
+                        that.addUserGroupDialogForm.user.push(item);
+                    });
+                }
+                that.addUserGroupDialogForm.remark  = that.updateData.comment;
             },
             add: async function () {
                 var that = this;
@@ -180,16 +187,16 @@
                 }
             },
             update: async function () {
-                var that = this;
+                let that = this;
                 let params = {
                     name: that.addUserGroupDialogForm.name,
                     users: that.addUserGroupDialogForm.user,
                     comment: that.addUserGroupDialogForm.remark,
                 };
 
-                this.isLoading = true;
+                that.isLoading = true;
 
-                const res = await that.$axios.put('http://localhost:8000/api/users/group/', params);
+                const res = await that.$axios.patch('http://localhost:8000/api/users/group/' + that.updateData.id + '/', params);
                 if (res.status === 200) {
                     that.$message({
                         message: '修改成功',
@@ -201,12 +208,12 @@
                         type: 'info'
                     });
                 }
-                this.isLoading = false;
+                that.isLoading = false;
+                that.closeDialog();
             }
         },
         mounted: function () {
             this.getUserList();
-            this.getUserGroupDetail();
         }
 	}
 </script>

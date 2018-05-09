@@ -43,7 +43,7 @@
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">========{{addOrUpdateUserForm.userGroup}}
+                    <el-col :span="12">
                         <el-form-item
                             label="用户组: "
                             prop="userGroup"
@@ -75,6 +75,7 @@
                             生成重置密码连接，通过邮件发送给用户
                         </el-form-item>
                         <el-form-item
+                            prop="password"
                             label="密码: "
                             v-if="this.$route.query.addOrUpdate == 'update'"
                         >
@@ -176,7 +177,7 @@
                     </el-col>
                     <el-col :span="24" align="center">
                         <el-button>取 消</el-button>
-                        <el-button type="primary" @click="submitForm('addOrUpdateUserForm')">确 定</el-button>
+                        <el-button type="primary" :loading="isLoading" @click="submitForm('addOrUpdateUserForm')">确 定</el-button>
                     </el-col>
                     <div class="clear"></div>
                 </div>
@@ -194,6 +195,7 @@
 		data() {
 			return {
                 addOrUpdate: 'add',
+                isLoading: false,
                 userInfo: [],
                 addOrUpdateUserForm: {
                     name: '',
@@ -237,6 +239,9 @@
                     ],
                     userGroup: [
                         {required: false, message: '用户组不能为空', trigger: 'blur,change'}
+                    ],
+                    password: [
+                        {required: true, message: '密码不能为空', trigger: 'blur,change'}
                     ],
                     role: [
                         {required: true, message: '角色不能为空', trigger: 'blur,change'}
@@ -288,9 +293,11 @@
                         let data = response;
                         if (data.status === 200) {
                             if (data.data.results.length > 0) {
-                                that.userGroupList.push({
-                                    value: data.data.results[0].id,
-                                    label: data.data.results[0].name
+                                data.data.results.forEach(function (item) {
+                                    that.userGroupList.push({
+                                        value: item.id,
+                                        label: item.name
+                                    });
                                 });
                             }
                         }
@@ -316,7 +323,15 @@
                             that.addOrUpdateUserForm.name = that.userInfo.name;
                             that.addOrUpdateUserForm.userName = that.userInfo.username;
                             that.addOrUpdateUserForm.mail = that.userInfo.email;
-                            that.addOrUpdateUserForm.userGroup.push(that.userInfo.groups[0]);
+                            // if (that.userInfo.groups.length > 0) {
+                            //     that.addOrUpdateUserForm.userGroup.push(that.userInfo.groups[0]);
+                            // }
+                            if (that.userInfo.groups.length > 0) {
+                                that.userInfo.groups.forEach(function (item) {
+                                    that.addOrUpdateUserForm.userGroup.push(item);
+                                });
+                            }
+                            that.addOrUpdateUserForm.password = that.userInfo.password;
                             that.addOrUpdateUserForm.role = that.userInfo.role;
                             that.addOrUpdateUserForm.endDate = that.userInfo.date_expired;
                             that.addOrUpdateUserForm.phone = that.userInfo.phone;
@@ -396,12 +411,22 @@
                     wechat: that.addOrUpdateUserForm.weixin,
                     comment: that.addOrUpdateUserForm.comment,
                 };
-
-                const res = await that.$axios.put('http://localhost:8000/api/users/user/', params);
-                that.$message({
-                    message: '修改成功',
-                    type: 'success'
-                });
+                this.isLoading = true;
+                const res = await that.$axios.patch('http://localhost:8000/api/users/user/' + that.$route.query.userId + '/', params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                } else {
+                    that.$message({
+                        message: '操作失败',
+                        type: 'info'
+                    });
+                }
+                this.isLoading = false;
+                that.resetForm('addOrUpdateUserForm');
+                that.getUserDetail();
             }
         },
         mounted: function () {

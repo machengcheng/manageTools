@@ -1,6 +1,6 @@
 <template>
     <section class="network-list-default-section">
-        <add-or-update-network-dialog :addOrUpdateNetworkDialogVisible="addOrUpdateNetworkDialogVisible" @addOrUpdateNetworkDialogEvent="updateDialogStatus" :addOrUpdate="addOrUpdate"></add-or-update-network-dialog>
+        <add-or-update-network-dialog :updateData="updateData" :updateStatus="updateStatus" :addOrUpdateNetworkDialogVisible="addOrUpdateNetworkDialogVisible" @addOrUpdateNetworkDialogEvent="updateDialogStatus" :addOrUpdate="addOrUpdate"></add-or-update-network-dialog>
         <div class="box-title">网域列表</div>
         <div class="box-operate">
             <el-button type="primary" size="small" @click="createNetwork();">创建网域</el-button>
@@ -32,21 +32,21 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="assets"
+                    prop="asset_count"
                     label="资产"
                     sortable
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="gateway"
+                    prop="gateway_count"
                     label="网关"
                     sortable
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="remark"
+                    prop="comment"
                     label="备注"
                     sortable
                     show-overflow-tooltip
@@ -62,7 +62,7 @@
                             type="primary"
                             size="mini"
                             plain
-                            @click="updateUNetwork"
+                            @click="updateUNetwork(scope.$index, scope.row)"
                         >
                             更新
                         </el-button>
@@ -96,6 +96,8 @@
 		data() {
 			return {
                 addOrUpdateNetworkDialogVisible: false,
+                updateData: [],
+                updateStatus: '',
                 searchKey: '',
                 isLoading: false,
                 multipleSelection: [],
@@ -116,9 +118,13 @@
                 this.addOrUpdate = 'add';
                 this.addOrUpdateNetworkDialogVisible = true;
             },
-            updateUNetwork: function () {
-                this.addOrUpdate = 'update';
-                this.addOrUpdateNetworkDialogVisible = true;
+            updateUNetwork: function (index, row) {
+                let that = this;
+                that.updateData = row;
+                that.addOrUpdate = 'update';
+                let tempDate = new Date();
+                that.updateStatus = tempDate.toTimeString();
+                that.addOrUpdateNetworkDialogVisible = true;
             },
             handleSelectionChange: function (val) {
                 this.multipleSelection = val;

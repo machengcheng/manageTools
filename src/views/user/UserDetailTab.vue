@@ -11,7 +11,7 @@
         <el-row>
             <el-col :span="16" class="pd10">
                 <div class="block-item" style="height: 561px;">
-                    <div class="block-title">Administrator</div>
+                    <div class="block-title">{{ userDetailData.name }}</div>
                     <ul class="info-list">
                         <li class="info-item">
                             <img src="../../assets/imgs/user-detail-img.png" />

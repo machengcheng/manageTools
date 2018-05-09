@@ -9,7 +9,7 @@
             :open="initDialogData()"
             >
             <el-form :model="addOrUpdateNetworkDialogForm" :rules="rules" ref="addOrUpdateNetworkDialogForm" class="demo-form-inline" label-width="120px">
-                <div class="content">
+                <div class="content">----{{datas}}
                     <el-col :span="24">
                         <el-form-item
                             label="名称: "
@@ -73,7 +73,7 @@
 		components: {
 
         },
-        props: ['addOrUpdateNetworkDialogVisible', 'addOrUpdate'],
+        props: ['addOrUpdateNetworkDialogVisible', 'addOrUpdate', 'updateData', 'updateStatus'],
 		data() {
 			return {
 			    isLoading: false,
@@ -83,6 +83,7 @@
                     comment: ''
                 },
                 assetsList: [],
+                datas: [],
                 rules: {
                     name: [
                         {required: true, message: '名称不能为空', trigger: 'blur,change'}
@@ -90,6 +91,13 @@
                 }
             }
 		},
+        watch: {
+            updateStatus: function (newVal, oldVal) {
+                if(newVal != oldVal) {
+                    this.getNetworkDetail();
+                }
+            }
+        },
 		methods: {
             closeDialog: function () {
                 this.$emit('addOrUpdateNetworkDialogEvent', this.addOrUpdateNetworkDialogVisible);
@@ -120,7 +128,18 @@
             resetForm(formName) {
                 this.$refs[formName].resetFields();
             },
-
+            getNetworkDetail: function () {
+                let that = this;
+                that.datas = this.updateData;
+                that.addOrUpdateNetworkDialogForm.name  = that.updateData.name;
+                if (that.updateData.asset.length > 0) {
+                    that.updateData.asset.forEach(function (item) {
+                        that.addOrUpdateNetworkDialogForm.assets.push(item);
+                    });
+                }
+                that.addOrUpdateNetworkDialogForm.comment  = this.updateData.comment;
+                that.getNetworkDetailInfo(this.datas.id);
+            },
             getAssetsList: function () {
                 let that = this;
                 this.$axios.get('http://localhost:8000/api/assets/asset', {})
@@ -135,6 +154,26 @@
                                     });
                                 });
                             }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            getNetworkDetailInfo: async function(id) {
+                let that = this;
+                let params = {
+                    id__in: id
+                };
+                that.$axios.get('http://localhost:8000/api/assets/domain/', { params: params })
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+
                         }
                     })
                     .catch(function (response) {
