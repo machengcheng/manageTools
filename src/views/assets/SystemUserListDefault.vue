@@ -26,7 +26,7 @@
                     width="120"
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="systemUserDetail" size="small">{{ scope.row.name }}</el-button>
+                        <el-button type="text" @click="systemUserDetail(scope.$index, scope.row)" size="small">{{ scope.row.name }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -81,7 +81,7 @@
                             type="primary"
                             size="mini"
                             plain
-                            @click="updateSystemUser"
+                            @click="updateSystemUser(scope.$index, scope.row)"
                         >
                             更新
                         </el-button>
@@ -89,7 +89,7 @@
                             type="danger"
                             size="mini"
                             plain
-                            @click="deleteSystemUser"
+                            @click="deleteSystemUser(scope.$index, scope.row)"
                         >
                             删除
                         </el-button>
@@ -97,7 +97,7 @@
                 </el-table-column>
             </el-table>
             <el-col :span="24" class="toolbar">
-                <el-pagination layout="sizes, total, prev, pager, next" background @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-sizes="pageSizes" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
+                <el-pagination layout="sizes, total, prev, pager, next" background :current-page="page" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-sizes="pageSizes" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
             <div class="clear"></div>
@@ -136,19 +136,17 @@
                 this.getData();
             },
             search: function () {
-
+                this.page = 1;
+                this.getData();
             },
             createSystemUser: function () {
                 this.$router.push({ path: '/home/systemUserList/addOrUpdateSystemUser', query: {addOrUpdate: 'add'}});
             },
-            updateSystemUser: function () {
-                this.$router.push({ path: '/home/systemUserList/addOrUpdateSystemUser', query: {addOrUpdate: 'update'}});
+            updateSystemUser: function (index, row) {
+                this.$router.push({ path: '/home/systemUserList/addOrUpdateSystemUser', query: {addOrUpdate: 'update', userId: row.id}});
             },
-            systemUserDetail: function () {
-                this.$router.push({ path: '/home/systemUserList/SystemUserDetail' });
-            },
-            deleteSystemUser: function () {
-
+            systemUserDetail: function (index, row) {
+                this.$router.push({ path: '/home/systemUserList/SystemUserDetail', query: { userId: row.id } });
             },
             getData: async function() {
                 let that = this;
@@ -158,7 +156,7 @@
                     type: 'get'
                 };
                 this.isLoading = true;
-                that.$axios.get('http://127.0.0.1:8000/api/assets/admin-user/', { params: params})
+                that.$axios.get('http://127.0.0.1:8000/api/assets/system-user/', { params: params})
                     .then(function (response) {
                         let data = response;
                         if (data.status === 200) {
@@ -175,6 +173,46 @@
                             duration: 1500
                         });
                     });
+            },
+            deleteSystemUserFunc: async function (index, row) {
+                let that = this;
+                // let tempDelArr = [];
+                // tempDelArr.push(row.id);
+                // let params = {
+                //     id__in: tempDelArr.join(',')
+                // };
+                const res = await that.$axios.delete('http://localhost:8000/api/assets/system-user/' + row.id + '/', {});
+                if (res.status === 204) {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功',
+                        duration: 1500
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '删除失败',
+                        duration: 1500
+                    });
+                }
+                that.search();
+            },
+            deleteSystemUser: function (index, row) {
+                let that = this;
+
+                that.$confirm('删除该记录?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.deleteSystemUserFunc(index, row);
+                }).catch(() => {
+                    that.$message({
+                        type: 'info',
+                        message: '已取消删除',
+                        duration: 1500
+                    });
+                });
             }
         },
         mounted: function () {

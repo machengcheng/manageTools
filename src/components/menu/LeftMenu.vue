@@ -1,7 +1,7 @@
 <template>
     <section>
         <div style="width: 210px;background-color: transparent;">
-            <img src="../../assets/imgs/logo-text.png" style="display: inline-block;width: 220px;height: 55px;border: 0;padding: 0;margin: 0;" />
+            <img src="../../assets/imgs/logo-text1.png" style="display: inline-block;width: 220px;height: 55px;border: 0;padding: 0;margin: 0;" />
         </div>
         <el-menu
             class="el-menu-vertical-demo"

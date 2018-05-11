@@ -12,6 +12,8 @@ import vueFilter from 'vue-filter';
 import ol from 'openlayers';
 import QuillEditor from 'vue-quill-editor';
 import 'openlayers/css/ol.css';
+import contentmenu from 'v-contextmenu';
+import 'v-contextmenu/dist/index.css'
 
 Vue.use(ol);
 Vue.use(VueWechatTitle);
@@ -19,6 +21,7 @@ Vue.use(ElementUI);
 Vue.use(QuillEditor);
 Vue.use(common);
 Vue.use(vueFilter);
+Vue.use(contentmenu);
 
 Vue.config.productionTip = false;
 

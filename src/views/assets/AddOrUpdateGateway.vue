@@ -68,7 +68,7 @@
                             prop="network"
                         >
                             <el-select
-                                id="assets-select"
+                                id="assets-select1"
                                 v-model="addOrUpdateGatewayForm.network"
                                 placeholder="请选择网域"
                             >

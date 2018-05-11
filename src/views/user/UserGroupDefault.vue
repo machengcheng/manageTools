@@ -79,7 +79,7 @@
                 </el-table-column>
             </el-table>
             <el-col :span="24" class="toolbar">
-                <el-pagination layout="sizes, total, prev, pager, next" background @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
+                <el-pagination layout="sizes, total, prev, pager, next" background :current-page="page" @current-change="handleCurrentChange" @size-change="handleSizeChange" :page-size="pageSize" :total="total" style="margin: 15px 0;float:right;">
                 </el-pagination>
             </el-col>
             <div class="clear"></div>

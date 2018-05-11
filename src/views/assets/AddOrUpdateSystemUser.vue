@@ -22,10 +22,10 @@
                     <el-col :span="24">
                         <el-form-item
                             label="用户名: "
-                            prop="userName"
+                            prop="username"
                         >
                             <el-input
-                                v-model="addOrUpdateSystemUserForm.userName"
+                                v-model="addOrUpdateSystemUserForm.username"
                                 size="medium"
                             >
                             </el-input>
@@ -34,10 +34,10 @@
                     <el-col :span="24">
                         <el-form-item
                             label="优先级: "
-                            prop="priorityLevel"
+                            prop="priority"
                         >
                             <el-input
-                                v-model="addOrUpdateSystemUserForm.priorityLevel"
+                                v-model="addOrUpdateSystemUserForm.priority"
                                 type="number"
                                 min="1"
                                 max="10"
@@ -51,24 +51,31 @@
                             label="协议: "
                             prop="protocol"
                         >
-                            <el-input
+                            <el-select
+                                id="protocol-select"
                                 v-model="addOrUpdateSystemUserForm.protocol"
-                                size="medium"
+                                placeholder="请选择协议"
                             >
-                            </el-input>
+                                <el-option
+                                    v-for="item in protocolList"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                     <div class="item-split">
                         <span class="item-title">认证</span>
                     </div>
+                    <!--<el-col :span="24">-->
+                        <!--<el-form-item-->
+                            <!--label="自动生成密钥: "-->
+                            <!--&gt;-->
+                            <!--<el-checkbox v-model="isAutoKey"></el-checkbox>-->
+                        <!--</el-form-item>-->
+                    <!--</el-col>-->
                     <el-col :span="24">
-                        <el-form-item
-                            label="自动生成密钥: "
-                            >
-                            <el-checkbox v-model="isAutoKey"></el-checkbox>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="24" v-if="!isAutoKey">
                         <el-form-item
                             label="密码: "
                             prop="password"
@@ -76,11 +83,12 @@
                             <el-input
                                 v-model="addOrUpdateSystemUserForm.password"
                                 size="medium"
+                                type="password"
                             >
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="24" v-if="!isAutoKey">
+                    <el-col :span="24">
                         <el-form-item
                             label="ssh私钥: "
                             prop="sshCode"
@@ -104,7 +112,7 @@
                         <el-form-item
                             label="自动推送: "
                         >
-                            <el-checkbox v-model="isAutoPush"></el-checkbox>
+                            <el-checkbox v-model="addOrUpdateSystemUserForm.auto_push"></el-checkbox>
                         </el-form-item>
                     </el-col>
                     <div class="item-split">
@@ -147,13 +155,13 @@
                                 size="medium"
                                 resize="none"
                                 placeholder="请输入备注信息"
-                                v-model="addOrUpdateSystemUserForm.remark">
+                                v-model="addOrUpdateSystemUserForm.comment">
                             </el-input><br/>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" align="center">
                         <el-button>取 消</el-button>
-                        <el-button type="primary">确 定</el-button>
+                        <el-button type="primary" :loading="isLoading" @click="submitForm('addOrUpdateSystemUserForm')">确 定</el-button>
                     </el-col>
                     <div class="clear"></div>
                 </div>
@@ -172,16 +180,29 @@
 			return {
                 isAutoKey: true,
                 isAutoPush: true,
+                isLoading: false,
                 addOrUpdateSystemUserForm: {
                     name: '',
-                    userName: '',
-                    priorityLevel: '',
+                    username: '',
+                    priority: '',
                     protocol: '',
                     sshCode: '',
                     sudo: '',
                     shell: '',
-                    remark: ''
+                    auto_push: true,
+                    comment: ''
                 },
+                systemUserInfo: [],
+                protocolList: [
+                    {
+                        value: 'ssh',
+                        label: 'ssh'
+                    },
+                    {
+                        value: 'rdp',
+                        label: 'rdp'
+                    }
+                ],
                 fileList: [
                     {
                         name: 'food.jpeg',
@@ -193,7 +214,28 @@
                     }
                 ],
                 rules: {
-
+                    name: [
+                        {required: true, message: '名称不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ],
+                    username: [
+                        {required: true, message: '用户名不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ],
+                    password: [
+                        {required: true, message: '密码不能为空', trigger: 'blur,change'}
+                    ],
+                    protocol: [
+                        {required: true, message: '请选择协议', trigger: 'blur,change'}
+                    ],
+                    sudo: [
+                        {required: true, message: 'sudo不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 500, message: '最大长度为500个字符', trigger: 'blur change'}
+                    ],
+                    shell: [
+                        {required: true, message: 'shell不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ]
                 }
             }
 		},
@@ -209,6 +251,112 @@
             },
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+            submitForm(formName) {
+                let that = this;
+                that.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        switch(that.$route.query.addOrUpdate) {
+                            case 'add':
+                                this.add();
+                                break;
+                            case 'update':
+                                this.update();
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            getSystemUserDetail: async function() {
+                let that = this;
+                let id = that.$route.query.userId;
+                this.isLoading = true;
+                that.$axios.get('http://127.0.0.1:8000/api/assets/system-user/' + id + '/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.systemUserInfo = data.data ? data.data : [];
+                            that.addOrUpdateSystemUserForm.name = that.systemUserInfo.name;
+                            that.addOrUpdateSystemUserForm.username = that.systemUserInfo.username;
+                            that.addOrUpdateSystemUserForm.password = that.systemUserInfo._password;
+                            that.addOrUpdateSystemUserForm.priority = that.systemUserInfo.priority;
+                            that.addOrUpdateSystemUserForm.protocol = that.systemUserInfo.protocol;
+                            that.addOrUpdateSystemUserForm.auto_push = that.systemUserInfo.auto_push;
+                            that.addOrUpdateSystemUserForm.sudo = that.systemUserInfo.sudo;
+                            that.addOrUpdateSystemUserForm.shell = that.systemUserInfo.shell;
+                            that.addOrUpdateSystemUserForm.comment = that.systemUserInfo.comment;
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            add: async function () {
+                var that = this;
+                let params = {
+                    name: that.addOrUpdateSystemUserForm.name,
+                    username: that.addOrUpdateSystemUserForm.username,
+                    priority: that.addOrUpdateSystemUserForm.priority,
+                    _password: that.addOrUpdateSystemUserForm.password,
+                    auto_push: that.addOrUpdateSystemUserForm.auto_push,
+                    sudo: that.addOrUpdateSystemUserForm.sudo,
+                    shell: that.addOrUpdateSystemUserForm.shell,
+                    comment: that.addOrUpdateSystemUserForm.comment
+                };
+
+                that.isLoading = true;
+                const res = await that.$axios.post('http://localhost:8000/api/assets/system-user/', params);
+                if (res.status === 201) {
+                    that.$message({
+                        message: '添加成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.resetForm('addOrUpdateSystemUserForm');
+                }
+            },
+            update: async function () {
+                var that = this;
+                let params = {
+                    name: that.addOrUpdateSystemUserForm.name,
+                    username: that.addOrUpdateSystemUserForm.username,
+                    priority: that.addOrUpdateSystemUserForm.priority,
+                    _password: that.addOrUpdateSystemUserForm.password,
+                    auto_push: that.addOrUpdateSystemUserForm.auto_push,
+                    sudo: that.addOrUpdateSystemUserForm.sudo,
+                    shell: that.addOrUpdateSystemUserForm.shell,
+                    comment: that.addOrUpdateSystemUserForm.comment
+                };
+
+                that.isLoading = true;
+                const res = await that.$axios.patch('http://localhost:8000/api/assets/system-user/' + that.$route.query.userId + '/', params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '更新成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.getManageUserDetail();
+                }
+            }
+        },
+        mounted: function () {
+            if (this.$route.query.addOrUpdate === 'update') {
+                this.getSystemUserDetail();
             }
         }
 	}
@@ -246,7 +394,7 @@
                 width: 50%!important;
             }
             .el-select .el-input__inner {
-                width: 50%!important;
+                width: 100%!important;
             }
             [class*=el-col-12] {
                 float: left;
