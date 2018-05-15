@@ -3,7 +3,7 @@
         <div class="box-title mb20">{{this.$route.query.addOrUpdate == 'add' ? '创建资产' : '更新资产'}}</div>
         <div class="box-content">
             <el-form :model="addOrUpdateAssetsForm" :rules="rules" ref="addOrUpdateAssetsForm" class="demo-form-inline" label-width="120px">
-                <div class="content">
+                <div class="content">===={{assetsInfo}}
                     <div class="item-split">
                         <span class="item-title">基本</span>
                     </div>
@@ -118,11 +118,11 @@
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <div class="clear"></div>
+                    <div class="clear"></div>-----{{$route.query.assetId}}
                     <div class="item-split">
                         <span class="item-title">节点</span>
                     </div>
-                    <el-col :span="12">
+                    <el-col :span="12">===={{addOrUpdateAssetsForm.nodeManage}}
                         <el-form-item
                             label="节点管理: "
                             prop="nodeManage"
@@ -155,7 +155,6 @@
                             <el-select
                                 id="userGroup"
                                 v-model="addOrUpdateAssetsForm.label"
-                                multiple
                                 multiple
                                 placeholder="请选择标签"
                             >
@@ -216,8 +215,8 @@
                     publicIp: '',
                     network: '',
                     manageUser: '',
-                    nodeManage: '',
-                    label: '',
+                    nodeManage: [],
+                    label: [],
                     comment: '',
                     is_active: true
                 },
@@ -251,6 +250,7 @@
                 manageUserList: [],
                 nodeManageList: [],
                 labelList: [],
+                assetsInfo: [],
                 rules: {
                     hostName: [
                         {required: true, message: '主机名不能为空', trigger: 'blur,change'},
@@ -323,7 +323,7 @@
             },
             getManageUserList: function () {
                 let that = this;
-                this.$axios.get('http://localhost:8000/api/assets/domain/', {})
+                this.$axios.get('http://localhost:8000/api/assets/admin-user/', {})
                     .then(function (response) {
                         let data = response;
                         if (data.status === 200) {
@@ -351,8 +351,8 @@
                     .then(function (response) {
                         let data = response;
                         if (data.status === 200) {
-                            if (data.data.results.length > 0) {
-                                data.data.results.forEach(function (item) {
+                            if (data.data.length > 0) {
+                                data.data.forEach(function (item) {
                                     that.nodeManageList.push({
                                         value: item.id,
                                         label: item.value
@@ -393,6 +393,40 @@
                         });
                     });
             },
+            getAssetsDetail: async function() {
+                let that = this;
+                let params = {
+                    id__in: that.$route.query.assetId
+                };
+                this.isLoading = true;
+                that.$axios.get('http://127.0.0.1:8000/api/assets/asset/', { params: params })
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.assetsInfo = data.data.results.length > 0 ? data.data.results[0] : [];
+                            that.addOrUpdateAssetsForm.hostName = that.assetsInfo.hostname;
+                            that.addOrUpdateAssetsForm.ip = that.assetsInfo.ip;
+                            that.addOrUpdateAssetsForm.port = that.assetsInfo.port;
+                            that.addOrUpdateAssetsForm.platform = that.assetsInfo.platform;
+                            that.addOrUpdateAssetsForm.publicIp = that.assetsInfo.public_ip;
+                            that.addOrUpdateAssetsForm.network = that.assetsInfo.domain;
+                            that.addOrUpdateAssetsForm.manageUser = that.assetsInfo.admin_user;
+                            that.addOrUpdateAssetsForm.nodeManage = that.assetsInfo.nodes ? that.assetsInfo.nodes : [];
+                            that.addOrUpdateAssetsForm.label = that.assetsInfo.labels ? that.assetsInfo.labels : [];
+                            that.addOrUpdateAssetsForm.comment = that.assetsInfo.comment;
+                            that.addOrUpdateAssetsForm.is_active = that.assetsInfo.is_active;
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
             add: async function () {
                 let that = this;
                 let params = {
@@ -403,8 +437,8 @@
                     platform: that.addOrUpdateAssetsForm.platform,
                     domain: that.addOrUpdateAssetsForm.network,
                     admin_user: that.addOrUpdateAssetsForm.manageUser,
-                    nodes: that.addOrUpdateAssetsForm.nodeManage.join(','),
-                    labels: that.addOrUpdateAssetsForm.label.join(','),
+                    nodes: that.addOrUpdateAssetsForm.nodeManage,
+                    labels: that.addOrUpdateAssetsForm.label,
                     is_active: that.addOrUpdateAssetsForm.is_active,
                     comment: that.addOrUpdateAssetsForm.comment
                 };
@@ -420,8 +454,32 @@
                     that.resetForm('addOrUpdateAssetsForm');
                 }
             },
-            update: function () {
-                alert('update');
+            update: async function () {
+                let that = this;
+                let params = {
+                    hostname: that.addOrUpdateAssetsForm.hostName,
+                    ip: that.addOrUpdateAssetsForm.ip,
+                    port: that.addOrUpdateAssetsForm.port,
+                    public_ip: that.addOrUpdateAssetsForm.publicIp,
+                    platform: that.addOrUpdateAssetsForm.platform,
+                    domain: that.addOrUpdateAssetsForm.network,
+                    admin_user: that.addOrUpdateAssetsForm.manageUser,
+                    nodes: that.addOrUpdateAssetsForm.nodeManage,
+                    labels: that.addOrUpdateAssetsForm.label,
+                    is_active: that.addOrUpdateAssetsForm.is_active,
+                    comment: that.addOrUpdateAssetsForm.comment
+                };
+
+                that.isLoading = true;
+                const res = await that.$axios.patch('http://localhost:8000/api/assets/asset/' + that.$route.query.assetId + '/', params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.getAssetsDetail();
+                }
             }
         },
         mounted: function () {
@@ -429,6 +487,12 @@
             this.getManageUserList();
             this.getNodeList();
             this.getLabelList();
+            if (this.$route.query.assetId) {
+                this.addOrUpdateAssetsForm.nodeManage.push(this.$route.query.assetId);
+            }
+            if (this.$route.query.addOrUpdate === 'update') {
+                this.getAssetsDetail();
+            }
         }
 	}
 </script>

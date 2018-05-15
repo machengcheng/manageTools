@@ -1,6 +1,7 @@
 <template>
     <section class="assets-list-default">
         <rename-node-name-dialog :updateData="updateData" :updateStatus="updateStatus" :renameNodeNameDialogVisible="renameNodeNameDialogVisible" @renameNodeNameDialogVisibleEvent="updateDialogStatus"></rename-node-name-dialog>
+        <add-assets-to-node-dialog :updateData="updateData" :updateStatus="updateStatus" :addAssetsToNodeDialogVisible="addAssetsToNodeDialogVisible" @addAssetsToNodeDialogEvent="updateAssetsNodeDialogStatus"></add-assets-to-node-dialog>
         <div class="box-title">资产列表</div>
         <el-row>
             <el-col :span="6" class="pt20">
@@ -12,12 +13,13 @@
                     :expand-on-click-node="false"
                     :props="defaultProps"
                     :render-content="renderContent"
+                    @node-click="nodeClick"
                     @node-contextmenu="nodeContextMenu"
                     >
                 </el-tree>
                 <v-contextmenu ref="contextmenu">
-                    <v-contextmenu-item>创建资产</v-contextmenu-item>
-                    <v-contextmenu-item>添加资产到节点</v-contextmenu-item>
+                    <v-contextmenu-item @click="createAssets">创建资产</v-contextmenu-item>
+                    <v-contextmenu-item @click="addAssetsToNode">添加资产到节点</v-contextmenu-item>
                     <v-contextmenu-item>更新节点资产硬件信息</v-contextmenu-item>
                     <v-contextmenu-item>测试节点资产可连接性</v-contextmenu-item>
                     <v-contextmenu-item @click="addNode">新建节点</v-contextmenu-item>
@@ -27,11 +29,11 @@
             </el-col>
             <el-col :span="18" class="pt20">
                 <div class="box-operate">
-                    <el-button type="primary" size="small" @click="createAssets();">创建资产</el-button>
+                    <el-button type="primary" size="small" @click="createAssets">创建资产</el-button>
                     <el-button size="small" class="fr">导出</el-button>
                     <el-button size="small" class="fr">导入</el-button>
                     <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
-                    <el-input v-model="searchKey" size="small" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
+                    <el-input v-model="searchKey" size="small" @click="search" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
                 </div>
                 <div class="box-content">
                     <el-table
@@ -50,46 +52,41 @@
                         <el-table-column
                             prop="hostname"
                             label="主机名"
-                            sortable
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" @click="assetsDetail" size="small">{{ scope.row.hostname }}</el-button>
+                                <el-button type="text" @click="assetsDetail(scope.$index, scope.row)" size="small">{{ scope.row.hostname }}</el-button>
                             </template>
                         </el-table-column>
                         <el-table-column
                             prop="ip"
                             label="IP"
-                            sortable
                             show-overflow-tooltip
                         >
                         </el-table-column>
                         <el-table-column
                             prop="hardware"
                             label="硬件"
-                            sortable
                             show-overflow-tooltip
                         >
                         </el-table-column>
                         <el-table-column
                             prop="is_active"
                             label="激活中"
-                            sortable
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" @click="assetsDetail" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>
+                                <el-button type="text" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>
                             </template>
                         </el-table-column>
                         <el-table-column
                             prop="is_connective"
                             label="可连接"
-                            sortable
                             width="130"
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" @click="assetsDetail" size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>
+                                <el-button type="text"  size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -102,7 +99,7 @@
                                     type="primary"
                                     size="mini"
                                     plain
-                                    @click="updateAssets"
+                                    @click="updateAssets(scope.$index, scope.row)"
                                 >
                                     更新
                                 </el-button>
@@ -110,6 +107,7 @@
                                     type="danger"
                                     size="mini"
                                     plain
+                                    @click="deleteAsset(scope.$index, scope.row)"
                                 >
                                     删除
                                 </el-button>
@@ -147,10 +145,12 @@
 
 <script type="text/jsx">
 	import RenameNodeNameDialog from "./RenameNodeNameDialog";
+    import AddAssetsToNodeDialog from "./AddAssetsToNodeDialog";
 
     export default {
 		name: "assets-list-default",
 		components: {
+            AddAssetsToNodeDialog,
             RenameNodeNameDialog
         },
 		data() {
@@ -161,6 +161,7 @@
                 isLoading: false,
                 total: 0,
                 pageSize: 1,
+                currentNodeId: '',
                 page: 1,
                 operateTypes: [
                     {
@@ -247,6 +248,7 @@
                 updateData: [],
                 updateStatus: '',
                 renameNodeNameDialogVisible: false,
+                addAssetsToNodeDialogVisible: false,
                 defaultProps: {
                     id: 'id',
                     label: 'label',
@@ -270,13 +272,22 @@
                 this.getData();
             },
             createAssets: function () {
-                this.$router.push({path: '/home/assetsList/addOrUpdateAssets', query: {addOrUpdate: 'add'}});
+                let that = this;
+                that.updateData = that.currentNode;
+                this.$router.push({path: '/home/assetsList/addOrUpdateAssets', query: {addOrUpdate: 'add', assetId: that.updateData.id}});
             },
-            updateAssets: function () {
-                this.$router.push({path: '/home/assetsList/addOrUpdateAssets', query: {addOrUpdate: 'update'}});
+            addAssetsToNode: function () {
+                let that = this;
+                that.updateData = that.currentNode;
+                let tempDate = new Date();
+                that.updateStatus = tempDate.toTimeString();
+                this.addAssetsToNodeDialogVisible = true;
             },
-            assetsDetail: function () {
-                this.$router.push({path: '/home/assetsList/assetsDetail'});
+            updateAssets: function (index, row) {
+                this.$router.push({path: '/home/assetsList/addOrUpdateAssets', query: {addOrUpdate: 'update', assetId: row.id}});
+            },
+            assetsDetail: function (index, row) {
+                this.$router.push({path: '/home/assetsList/assetsDetail', query: { assetId: row.id }});
             },
             updateDialogStatus: function (val) {
                 let that = this;
@@ -286,9 +297,19 @@
                     that.getNodeList();
                 }
             },
+            updateAssetsNodeDialogStatus: function (val) {
+                let that = this;
+                that.addAssetsToNodeDialogVisible = false;
+                if (val === 'updated') {
+                    that.search();
+                    that.getNodeList();
+                }
+            },
             getData: async function () {
                 let that = this;
                 let params = {
+                    hostname: that.searchKey,
+                    node_id: that.currentNodeId,
                     limit: that.pageSize,
                     offset: that.pageSize * (that.page - 1)
                 };
@@ -311,6 +332,12 @@
                         });
                     });
             },
+            nodeClick: function (nodeObj, node, obj) {
+                let that = this;
+                that.currentNodeId = nodeObj.id;
+                that.search();
+                // alert(JSON.stringify(nodeObj.id));
+            },
             renderContent(h, {node, data, store}) {
                 console.info('===============node0');
                 console.info(node);
@@ -327,11 +354,11 @@
                 return nodeItem;
 
             },
-            nodeMenu: function () {
-
-            },
             nodeContextMenu: function (event, nodeObj, node, obj) {
                 let that = this;
+                that.currentNodeId = nodeObj.id;
+                that.search();
+                // alert(JSON.stringify(nodeObj.id));
                 // alert(90000000 + ": " + JSON.stringify(nodeObj) + "===" + node.isLeaf);
 
                 console.info("=========当前节点信息000000");
@@ -517,7 +544,44 @@
                 }
 
                 return tree;
-            }
+            },
+            deleteAssetFunc: async function (index, row) {
+                let that = this;
+                let id = row.id;
+
+                const res = await that.$axios.delete('http://localhost:8000/api/assets/asset/' + id + '/', {});
+                if (res.status === 204) {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功',
+                        duration: 1500
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '删除失败',
+                        duration: 1500
+                    });
+                }
+                that.search();
+            },
+            deleteAsset: function (index, row) {
+                let that = this;
+
+                that.$confirm('删除该记录?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    that.deleteAssetFunc(index, row);
+                }).catch(() => {
+                    // that.$message({
+                    //     type: 'info',
+                    //     message: '已取消删除',
+                    //     duration: 1500
+                    // });
+                });
+            },
         },
         mounted: function () {
             let that = this;

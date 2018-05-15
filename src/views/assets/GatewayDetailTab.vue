@@ -44,13 +44,13 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="userName"
+                    prop="username"
                     label="用户名"
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="remark"
+                    prop="comment"
                     label="备注"
                     show-overflow-tooltip
                 >
@@ -65,7 +65,7 @@
                             type="primary"
                             size="mini"
                             plain
-                            @click="updateGateway"
+                            @click="updateGateway(scope.$index, scope.row)"
                         >
                             更新
                         </el-button>
@@ -132,7 +132,7 @@
             createGateway: function () {
                 this.$router.push({ path: '/home/networkList/addOrUpdateGateway', query: {addOrUpdate: 'add'}});
             },
-            updateGateway: function () {
+            updateGateway: function (index, row) {
                 this.$router.push({ path: '/home/networkList/addOrUpdateGateway', query: {addOrUpdate: 'update'}});
             },
             getData: async function() {

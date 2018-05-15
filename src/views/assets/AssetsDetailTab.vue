@@ -1,6 +1,6 @@
 <template>
     <section class="assets-detail-tab-section">
-        <el-row style="padding: 0 10px;">
+        <el-row style="display: none;padding: 0 10px;">
             <el-col :span="24">
                 <div class="box-operate pd0">
                     <el-button  type="primary" size="mini" class="fr">编辑</el-button>
@@ -9,25 +9,25 @@
             </el-col>
         </el-row>
         <el-row>
-            <el-col :span="16" class="pd10">
+            <el-col :span="16" class="pd10">==={{assetDetailData}}
                 <div class="block-item" style="min-height: 561px;">
-                    <div class="block-title">点1</div>
+                    <div class="block-title">{{assetDetailData.hostname}}</div>
                     <ul class="info-list">
                         <li class="info-item">
                             <span class="tips">主机名:</span>
-                            <span class="detail">点1</span>
+                            <span class="detail">{{assetDetailData.hostname}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">IP:</span>
-                            <span class="detail">10.221.121.1</span>
+                            <span class="detail">{{assetDetailData.ip}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">公网IP:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{assetDetailData.public_ip}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">端口:</span>
-                            <span class="detail">22</span>
+                            <span class="detail">{{assetDetailData.port}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">管理用户:</span>
@@ -55,15 +55,15 @@
                         </li>
                         <li class="info-item">
                             <span class="tips">系统平台:</span>
-                            <span class="detail">Linux</span>
+                            <span class="detail">{{assetDetailData.platform}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">操作系统:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{assetDetailData.os}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">激活:</span>
-                            <span class="detail">Yes</span>
+                            <span class="detail">{{assetDetailData.is_active === true ? 'Yes' : 'No'}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">序列号:</span>
@@ -75,15 +75,15 @@
                         </li>
                         <li class="info-item">
                             <span class="tips">创建者:</span>
-                            <span class="detail">None</span>
+                            <span class="detail">{{assetDetailData.created_by}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建日期:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{assetDetailData.date_created}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">备注:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{assetDetailData.comment}}</span>
                         </li>
                     </ul>
                 </div>
@@ -179,18 +179,44 @@
         props: ['assetsDetailVisible'],
 		data() {
 			return {
-                activateStatus: ''
+                activateStatus: '',
+                assetDetailData: []
             }
 		},
         watch: {
             assetsDetailVisible: function (newVal, oldVal) {
                 if(newVal != oldVal) {
-
+                    this.getData();
                 }
             }
         },
 		methods: {
-
+            getData: async function() {
+                let that = this;
+                let params = {
+                    id__in: that.$route.query.assetId
+                };
+                this.isLoading = true;
+                that.$axios.get('http://localhost:8000/api/assets/asset', { params: params})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.assetDetailData = data.data.results.length > 0 ? data.data.results[0] : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            }
+        },
+        mounted: function () {
+            this.getData();
         }
 	}
 </script>
