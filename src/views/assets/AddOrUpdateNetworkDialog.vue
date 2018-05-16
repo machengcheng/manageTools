@@ -203,8 +203,25 @@
                     that.closeDialog();
                 }
             },
-            update: function () {
+            update: async function () {
+                let that = this;
+                let params = {
+                    name: that.addOrUpdateNetworkDialogForm.name,
+                    asset: that.addOrUpdateNetworkDialogForm.assets.join(','),
+                    comment: that.addOrUpdateNetworkDialogForm.comment
+                };
 
+                that.isLoading = true;
+                const res = await that.$axios.patch('http://localhost:8000/api/assets/domain/' + that.datas.id + '/', params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.resetForm('addOrUpdateNetworkDialogForm');
+                    that.closeDialog();
+                }
             }
         },
         mounted: function () {

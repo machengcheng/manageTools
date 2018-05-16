@@ -133,7 +133,7 @@
                 this.$router.push({ path: '/home/networkList/addOrUpdateGateway', query: {addOrUpdate: 'add'}});
             },
             updateGateway: function (index, row) {
-                this.$router.push({ path: '/home/networkList/addOrUpdateGateway', query: {addOrUpdate: 'update'}});
+                this.$router.push({ path: '/home/networkList/addOrUpdateGateway', query: {addOrUpdate: 'update', gatewayId: row.id}});
             },
             getData: async function() {
                 let that = this;

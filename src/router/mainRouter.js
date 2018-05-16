@@ -126,6 +126,14 @@ export default [
                         meta: {
                             title: '资产详情'
                         }
+                    },
+                    {
+                        path: 'updateAssetsForBatch',
+                        name: '批量更新资产',
+                        component: resolve => require(['views/assets/UpdateAssetsForBatch.vue'], resolve),
+                        meta: {
+                            title: '批量更新资产'
+                        }
                     }
                 ]
             },

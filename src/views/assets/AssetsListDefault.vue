@@ -28,7 +28,7 @@
                 </v-contextmenu>
             </el-col>
             <el-col :span="18" class="pt20">
-                <div class="box-operate">
+                <div class="box-operate pt0">
                     <el-button type="primary" size="small" @click="createAssets">创建资产</el-button>
                     <el-button size="small" class="fr">导出</el-button>
                     <el-button size="small" class="fr">导入</el-button>
@@ -133,7 +133,8 @@
                         type="primary"
                         size="small"
                         plain
-                        :disabled="!operateType || multipleSelection.length === 0"
+                        :disabled="!operateType || multipleSelection.length === 0 || !currentNodeId"
+                        @click="batchOperate"
                     >
                         提交
                     </el-button>
@@ -160,7 +161,7 @@
                 tableData: [],
                 isLoading: false,
                 total: 0,
-                pageSize: 1,
+                pageSize: 10,
                 currentNodeId: '',
                 page: 1,
                 operateTypes: [
@@ -247,6 +248,7 @@
                 currentNode: [],
                 updateData: [],
                 updateStatus: '',
+                multipleSelection: [],
                 renameNodeNameDialogVisible: false,
                 addAssetsToNodeDialogVisible: false,
                 defaultProps: {
@@ -264,8 +266,8 @@
                 this.page = 1;
                 this.getData();
             },
-            handleSelectionChange: function () {
-
+            handleSelectionChange: function (val) {
+                this.multipleSelection = val;
             },
             handleCurrentChange: function (val) {
                 this.page = val;
@@ -335,6 +337,7 @@
             nodeClick: function (nodeObj, node, obj) {
                 let that = this;
                 that.currentNodeId = nodeObj.id;
+                that.currentNode = nodeObj;
                 that.search();
                 // alert(JSON.stringify(nodeObj.id));
             },
@@ -357,6 +360,7 @@
             nodeContextMenu: function (event, nodeObj, node, obj) {
                 let that = this;
                 that.currentNodeId = nodeObj.id;
+                that.currentNode = nodeObj;
                 that.search();
                 // alert(JSON.stringify(nodeObj.id));
                 // alert(90000000 + ": " + JSON.stringify(nodeObj) + "===" + node.isLeaf);
@@ -403,6 +407,10 @@
                         message: '删除失败',
                         duration: 1500
                     });
+                }
+                this.currentNodeId = '';
+                if (that.currentNode.length > 0) {
+                    that.currentNode.splice(0, that.currentNode.length);
                 }
                 that.getData();
                 that.getNodeList();
@@ -563,6 +571,10 @@
                         duration: 1500
                     });
                 }
+                that.currentNodeId = '';
+                if (that.currentNode.length > 0) {
+                    that.currentNode.splice(0, that.currentNode.length);
+                }
                 that.search();
             },
             deleteAsset: function (index, row) {
@@ -582,6 +594,168 @@
                     // });
                 });
             },
+            batchOperate: function () {
+                let that = this;
+                switch(this.operateType) {
+                    case '1':  //批量删除
+                        that.batchDelete();
+                        break;
+                    case '2':  //批量更新
+                        that.batchUpdate();
+                        break;
+                    case '3':  //从节点移除
+                        that.removeAssetsFromNode();
+                        break;
+                    case '4':  //禁用所选
+                        that.batchDisabled();
+                        break;
+                    case '5':  //激活所选
+                        that.batchActive();
+                        break;
+                    default:
+                        break;
+                }
+            },
+            batchUpdate: function () {
+                let that = this;
+                let assets = [];
+                that.multipleSelection.forEach(function (item) {
+                    assets.push(item.id);
+                });
+
+                this.$router.push({path: '/home/assetsList/updateAssetsForBatch', query: { assets: assets }});
+            },
+            batchDisabled: async function () {
+                let that = this;
+                let assets = [];
+                that.multipleSelection.forEach(function (item) {
+                    assets.push({
+                        pk: item.id,
+                        is_active: false
+                    });
+                });
+                let params = {
+                    assets: assets
+                };
+                const res = await that.$axios.patch('http://localhost:8000/api/assets/asset/', params.assets);
+                if (res.status === 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '操作成功',
+                        duration: 1500
+                    });
+                }
+                that.currentNodeId = '';
+                if (that.currentNode.length > 0) {
+                    that.currentNode.splice(0, that.currentNode.length);
+                }
+                that.operateType = '';
+                that.search();
+                that.getNodeList();
+            },
+            batchActive: async function () {
+                let that = this;
+                let assets = [];
+                that.multipleSelection.forEach(function (item) {
+                    assets.push({
+                        pk: item.id,
+                        is_active: true
+                    });
+                });
+                let params = {
+                    assets: assets
+                };
+                const res = await that.$axios.patch('http://localhost:8000/api/assets/asset/', params.assets);
+                if (res.status === 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '操作成功',
+                        duration: 1500
+                    });
+                }
+                that.currentNodeId = '';
+                if (that.currentNode.length > 0) {
+                    that.currentNode.splice(0, that.currentNode.length);
+                }
+                that.operateType = '';
+                that.search();
+                that.getNodeList();
+            },
+            batchDelete: async function () {
+                let that = this;
+                let assets = [];
+                that.multipleSelection.forEach(function (item) {
+                    assets.push(item.id);
+                });
+                let params = {
+                    id__in: assets.join(',')
+                };
+
+                const res = await that.$axios.delete('http://localhost:8000/api/assets/asset/', { params: params});
+                if (res.status === 204) {
+                    this.$message({
+                        type: 'success',
+                        message: '操作成功',
+                        duration: 1500
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '删除失败',
+                        duration: 1500
+                    });
+                }
+                that.currentNodeId = '';
+                if (that.currentNode.length > 0) {
+                    that.currentNode.splice(0, that.currentNode.length);
+                }
+                that.operateType = '';
+                that.search();
+                that.getNodeList();
+            },
+            removeAssetsFromNode: async function () {
+                let that = this;
+                let id = that.currentNodeId;
+                let assets = [];
+
+                that.multipleSelection.forEach(function (item) {
+                    assets.push(item.id);
+                });
+
+                let params = {
+                    assets: assets
+                };
+
+                const res = await that.$axios.put('http://localhost:8000/api/assets/nodes/' + id + '/assets/remove/', params);
+                if (res.status === 200) {
+                    if (!!res.data.asset_node_is_root) {
+                        this.$message({
+                            type: 'info',
+                            message: 'ROOT节点上的资产不能移除',
+                            duration: 1500
+                        });
+                        return;
+                    }
+                    this.$message({
+                        type: 'success',
+                        message: '操作成功',
+                        duration: 1500
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '删除失败',
+                        duration: 1500
+                    });
+                }
+                that.currentNodeId = '';
+                if (that.currentNode.length > 0) {
+                    that.currentNode.splice(0, that.currentNode.length);
+                }
+                that.operateType = '';
+                that.search();
+                that.getNodeList();
+            }
         },
         mounted: function () {
             let that = this;

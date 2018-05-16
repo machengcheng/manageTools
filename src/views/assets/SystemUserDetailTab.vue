@@ -92,6 +92,7 @@
                             >
                                 <el-option
                                     v-for="item in nodeList"
+                                    :key="item.value"
                                     :label="item.label"
                                     :value="item.value">
                                 </el-option>
@@ -184,8 +185,8 @@
                     .then(function (response) {
                         let data = response;
                         if (data.status === 200) {
-                            if (data.data.results.length > 0) {
-                                data.data.results.forEach(function (item) {
+                            if (data.data.length > 0) {
+                                data.data.forEach(function (item) {
                                     that.nodeList.push({
                                         value: item.id,
                                         label: item.value

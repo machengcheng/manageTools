@@ -19,12 +19,12 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="hostName"
+                    prop="hostname"
                     label="主机名"
                     show-overflow-tooltip
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" size="small">{{ scope.row.hostName }}</el-button>
+                        <el-button type="text" size="small" @click="assetsDetail(scope.$index, scope.row)">{{ scope.row.hostname }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -40,10 +40,13 @@
                 >
                 </el-table-column>
                 <el-table-column
-                    prop="link"
+                    prop="is_connective"
                     label="可连接"
                     show-overflow-tooltip
                 >
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
         </div>
@@ -61,19 +64,17 @@
 			return {
                 searchKey: '',
                 isLoading: false,
-                tableData: [
-                    {
-                        hostName: 'hostName',
-                        ip: '10.221.121.1',
-                        port: '22',
-                        link: ''
-                    }
-                ]
+                tableData: [],
+                total: 0,
+                pageSize: 1,
+                page: 1
             }
 		},
-        managerUserAssetsVisible: function (newVal, oldVal) {
-            if(newVal != oldVal) {
-
+        watch: {
+            'managerUserAssetsVisible': function (newVal, oldVal) {
+                if(newVal != oldVal) {
+                    this.search();
+                }
             }
         },
 		methods: {
@@ -81,8 +82,41 @@
 
             },
             search: function () {
-
+                this.page = 1;
+                this.getData();
+            },
+            getData: async function() {
+                let that = this;
+                let params = {
+                    admin_user: that.$route.query.userId,
+                    limit: that.pageSize,
+                    offset: that.pageSize*(that.page-1)
+                };
+                this.isLoading = true;
+                that.$axios.get('http://127.0.0.1:8000/api/assets/asset/', { params: params })
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.total = data.data.count ? data.data.count : 0;
+                            that.tableData = data.data.results.length > 0 ? data.data.results : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            assetsDetail: function (index, row) {
+                this.$router.push({path: '/home/assetsList/assetsDetail', query: { assetId: row.id }});
             }
+        },
+        mounted: function () {
+            this.search();
         }
 	}
 </script>

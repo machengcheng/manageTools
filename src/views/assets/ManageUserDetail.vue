@@ -37,7 +37,7 @@
                         let tempDate1 = new Date();
                         this.manageUserDetailVisible = tempDate1.toTimeString();
                         break;
-                    case 'auth-assets':
+                    case 'manager-user-assets-detail':
                         let tempDate2 = new Date();
                         this.managerUserAssetsVisible = tempDate2.toTimeString();
                         break;

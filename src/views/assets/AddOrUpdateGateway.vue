@@ -189,6 +189,7 @@
                     }
                 ],
                 networkList: [],
+                gatewayInfo: [],
                 isLoading: false,
                 fileList: [
                     {
@@ -290,6 +291,36 @@
                         });
                     });
             },
+            getGatewayDetail: async function() {
+                let that = this;
+                let id = that.$route.query.gatewayId;
+                this.isLoading = true;
+                that.$axios.get('http://127.0.0.1:8000/api/assets/gateway/' + id + '/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.gatewayInfo = data.data ? data.data : [];
+                            that.addOrUpdateGatewayForm.name = that.gatewayInfo.name;
+                            that.addOrUpdateGatewayForm.ip = that.gatewayInfo.ip;
+                            that.addOrUpdateGatewayForm.port = that.gatewayInfo.port;
+                            that.addOrUpdateGatewayForm.protocol = that.gatewayInfo.protocol;
+                            that.addOrUpdateGatewayForm.network = that.gatewayInfo.domain;
+                            that.addOrUpdateGatewayForm.userName = that.gatewayInfo.username;
+                            that.addOrUpdateGatewayForm.password = that.gatewayInfo._password;
+                            that.addOrUpdateGatewayForm.remark = that.gatewayInfo.comment;
+                            that.addOrUpdateGatewayForm.activate = that.gatewayInfo.is_active;
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
             add: async function () {
                 var that = this;
                 let params = {
@@ -321,10 +352,39 @@
                     });
                     that.isLoading = false;
                 }
+            },
+            update: async function () {
+                var that = this;
+                let params = {
+                    id: that.$route.query.gatewayId,   //网关id
+                    name: that.addOrUpdateGatewayForm.name,  //网域名称
+                    ip: that.addOrUpdateGatewayForm.ip, //ip
+                    port: that.addOrUpdateGatewayForm.port, //端口
+                    protocol: that.addOrUpdateGatewayForm.protocol,  //协议
+                    username: that.addOrUpdateGatewayForm.userName, //用户名
+                    _password: that.addOrUpdateGatewayForm.password, //密码
+                    domain: that.addOrUpdateGatewayForm.network,  //网域ID
+                    is_active: that.addOrUpdateGatewayForm.activate, //是否激活 1:是 0:否
+                    comment: that.addOrUpdateGatewayForm.remark, //备注信息
+                };
+
+                that.isLoading = true;
+                const res = await that.$axios.patch('http://localhost:8000/api/assets/gateway/' + that.$route.query.gatewayId + '/', params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '更新成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.getGatewayDetail();
+                }
             }
         },
         mounted: function () {
             this.getNetworkList();
+            if (this.$route.query.addOrUpdate === 'update') {
+                this.getGatewayDetail();
+            }
         }
 	}
 </script>
