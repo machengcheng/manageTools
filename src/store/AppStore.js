@@ -26,7 +26,8 @@ const state = {
     illegalDataConditions: {
 	    detectTime: '',
 	    plateNumber: ''
-    }
+    },
+    authCurrentNode: '',  //资产授权，当前选中节点
 };
 
 const mutations = {
@@ -46,7 +47,11 @@ const mutations = {
 	ILLEGAL_DATA_SEARCH(state, data) {
     	state.illegalDataConditions.detectTime = data.detectTime ? data.detectTime : '';
     	state.illegalDataConditions.plateNumber = data.plateNumber ? data.plateNumber : '';
-	}
+	},
+    //资产授权，设置当前选中节点
+    Set_Auth_Current_Node(state, data) {
+        state.authCurrentNode = data;
+    }
 };
 
 export default new Vuex.Store({

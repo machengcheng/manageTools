@@ -14,6 +14,7 @@
                         >
                             <el-input
                                 v-model="addOrUpdateAuthRuleForm.nodeName"
+                                :disabled="true"
                                 size="medium"
                             >
                             </el-input>
@@ -66,23 +67,24 @@
                         <el-form-item
                             label="激活中: "
                         >
-                            <el-checkbox v-model="addOrUpdateAuthRuleForm.activate"></el-checkbox>
+                            <el-checkbox v-model="addOrUpdateAuthRuleForm.is_active"></el-checkbox>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
                         <el-form-item
+                            prop="deadline"
                             label="失效日期: "
                             >
                             <el-date-picker
                                 v-model="addOrUpdateAuthRuleForm.deadline"
-                                type="date"
+                                type="datetime"
                                 placeholder="选择日期">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="备注: "
-                                      prop="remark"
+                                      prop="comment"
                         >
                             <el-input
                                 type="textarea"
@@ -91,13 +93,13 @@
                                 size="medium"
                                 resize="none"
                                 placeholder="请输入备注信息"
-                                v-model="addOrUpdateAuthRuleForm.remark">
+                                v-model="addOrUpdateAuthRuleForm.comment">
                             </el-input><br/>
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" align="center">
                         <el-button>取 消</el-button>
-                        <el-button type="primary">确 定</el-button>
+                        <el-button type="primary" :loading="isLoading" @click="submitForm('addOrUpdateAuthRuleForm')">确 定</el-button>
                     </el-col>
                     <div class="clear"></div>
                 </div>
@@ -107,6 +109,7 @@
 </template>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex';
 	export default {
 		name: "add-or-update-auth-rule",
 		components: {
@@ -114,45 +117,225 @@
         },
 		data() {
 			return {
+                isLoading: false,
                 addOrUpdateAuthRuleForm: {
                     nodeName: '',
                     userGroup: '',
                     systemUser: '',
                     deadline: '',
-                    activate: true,
-                    remark: ''
+                    is_active: true,
+                    comment: ''
                 },
-                userGroupList: [
-                    {
-                        value: '1',
-                        label: 'Default'
-                    },
-                    {
-                        value: '2',
-                        label: 'root1'
-                    }
-                ],
-                systemUserList: [
-                    {
-                        value: '1',
-                        label: 'root'
-                    },
-                    {
-                        value: '2',
-                        label: 'root001'
-                    },
-                    {
-                        value: '3',
-                        label: 'root002'
-                    }
-                ],
+                currentNode: [],
+                currentRule: [],
+                userGroupList: [],
+                systemUserList: [],
                 rules: {
-
+                    nodeName: [
+                        {required: true, message: '节点不能为空', trigger: 'blur,change'},
+                        {min: 1, max: 128, message: '最大长度为128个字符', trigger: 'blur change'}
+                    ],
+                    userGroup: [
+                        {required: true, message: '用户组不能为空', trigger: 'blur,change'}
+                    ],
+                    systemUser: [
+                        {required: true, message: '系统用户不能为空', trigger: 'blur,change'}
+                    ]
                 }
             }
 		},
+        computed: {
+            ...mapGetters({
+                getAuthCurrentNode: 'getAuthCurrentNode'
+            })
+        },
 		methods: {
+            format: function(fmt, date) {
+                var o = {
+                    "M+": date.getMonth() + 1, //月份
+                    "d+": date.getDate(), //日
+                    "h+": date.getHours(), //小时
+                    "m+": date.getMinutes(), //分
+                    "s+": date.getSeconds(), //秒
+                    "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+                    "S": date.getMilliseconds() //毫秒
+                };
+                if (/(y+)/.test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt))
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            },
+            formatDate: function (cellValue) {
+                return this.format('yyyy-MM-dd hh:mm:ss', new Date(cellValue));
+                // return this.format('yyyy-MM-dd', new Date(cellValue));
+            },
+            getUserGroups: function () {
+                let that = this;
+                this.$axios.get('http://localhost:8000/api/users/group', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                data.data.results.forEach(function (item) {
+                                    that.userGroupList.push({
+                                        value: item.id,
+                                        label: item.name
+                                    });
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            getSystemUser: function () {
+                let that = this;
+                this.$axios.get('http://localhost:8000/api/assets/system-user', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            if (data.data.results.length > 0) {
+                                data.data.results.forEach(function (item) {
+                                    that.systemUserList.push({
+                                        value: item.id,
+                                        label: item.name
+                                    });
+                                });
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            submitForm(formName) {
+                let that = this;
+                that.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        switch(that.$route.query.addOrUpdate) {
+                            case 'add':
+                                that.add();
+                                break;
+                            case 'update':
+                                that.update();
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            },
+            getNodeDetail: async function () {
+                let that = this;
+                await this.$axios.get('http://localhost:8000/api/assets/nodes/' + that.$route.query.node + '/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.currentNode = data.data ? data.data : [];
+                            that.addOrUpdateAuthRuleForm.nodeName = that.currentNode.value;
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            getRuleDetail: async function () {
+                let that = this;
+                await this.$axios.get('http://localhost:8000/api/perms/asset-permissions/' + that.$route.query.ruleId + '/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.currentRule = data.data ? data.data : [];
+                            that.addOrUpdateAuthRuleForm.nodeName = that.currentRule.node.name;
+                            that.addOrUpdateAuthRuleForm.userGroup = that.currentRule.user_group.pk;
+                            that.addOrUpdateAuthRuleForm.systemUser = that.currentRule.system_user.pk;
+                            that.addOrUpdateAuthRuleForm.deadline = that.currentRule.date_expired;
+                            that.addOrUpdateAuthRuleForm.comment = that.currentRule.comment;
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            },
+            add: async function () {
+                var that = this;
+                let params = {
+                    node: that.currentNode.id,  //节点id
+                    user_group: that.addOrUpdateAuthRuleForm.userGroup,  //用户组id
+                    system_user: that.addOrUpdateAuthRuleForm.systemUser, //系统用户id
+                    date_expired: that.formatDate(that.addOrUpdateAuthRuleForm.deadline),  //过期时间
+                    is_active: that.addOrUpdateAuthRuleForm.is_active,  //是否激活
+                    comment: that.addOrUpdateAuthRuleForm.comment,  //备注信息
+                };
+                that.isLoading = true;
+                const res = await that.$axios.post('http://localhost:8000/api/perms/asset-permissions/', params);
+                if (res.status === 201) {
+                    that.$message({
+                        message: '创建成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.$router.push({ path: '/home/assetsAuthList' });
+                }
+            },
+            update: async function () {
+                let that = this;
+                let params = {
+                    node: that.currentNode.id,  //节点id
+                    user_group: that.addOrUpdateAuthRuleForm.userGroup,  //用户组id
+                    system_user: that.addOrUpdateAuthRuleForm.systemUser, //系统用户id
+                    date_expired: that.formatDate(that.addOrUpdateAuthRuleForm.deadline),  //过期时间
+                    is_active: that.addOrUpdateAuthRuleForm.is_active,  //是否激活
+                    comment: that.addOrUpdateAuthRuleForm.comment,  //备注信息
+                };
 
+                that.isLoading = true;
+                const res = await that.$axios.patch('http://localhost:8000/api/perms/asset-permissions/' + that.$route.query.ruleId + '/', params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    that.$router.push({ path: '/home/assetsAuthList' });
+                }
+            }
+        },
+        mounted: function () {
+		    let that = this;
+            that.getUserGroups();
+            that.getSystemUser();
+            if (that.$route.query.addOrUpdate === 'add') {
+                that.getNodeDetail();
+            }
+            if (that.$route.query.addOrUpdate === 'update') {
+                that.getRuleDetail();
+            }
         }
 	}
 </script>

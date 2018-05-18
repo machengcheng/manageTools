@@ -145,52 +145,10 @@
                 user: '',
                 assets: '',
                 systemUser: '',
-                userList: [
-                    {
-                        value: '1',
-                        label: 'root'
-                    },
-                    {
-                        value: '2',
-                        label: 'root001'
-                    },
-                    {
-                        value: '3',
-                        label: 'root002'
-                    },
-                    {
-                        value: '4',
-                        label: 'Administrator'
-                    }
-                ],
-                assetsList: [
-                    {
-                        value: '1',
-                        label: '101'
-                    },
-                    {
-                        value: '2',
-                        label: '102'
-                    },
-                    {
-                        value: '3',
-                        label: '103'
-                    }
-                ],
-                systemUserList: [
-                    {
-                        value: '1',
-                        label: 'root'
-                    },
-                    {
-                        value: '2',
-                        label: 'root1'
-                    },
-                    {
-                        value: '3',
-                        label: 'root2'
-                    }
-                ],
+                userList: [],
+                assetsList: [],
+                systemUserList: [],
+                conditions: [],
                 tableData: [
                     {
                         id: 1,
@@ -216,7 +174,52 @@
             },
             search: function () {
 
+            },
+            getConditions: async function() {
+                let that = this;
+                that.$axios.get('http://127.0.0.1:8000/terminal/command/disctinct/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.conditions = data.data ? data.data : [];
+                            if (that.conditions.user && that.conditions.user.length >0) {
+                                that.conditions.user.forEach(function (item) {
+                                    that.userList.push({
+                                        value: item,
+                                        label: item
+                                    });
+                                })
+                            }
+                            if (that.conditions.asset && that.conditions.asset.length >0) {
+                                that.conditions.asset.forEach(function (item) {
+                                    that.assetsList.push({
+                                        value: item,
+                                        label: item
+                                    });
+                                })
+                            }
+                            if (that.conditions.system_user && that.conditions.system_user.length >0) {
+                                that.conditions.system_user.forEach(function (item) {
+                                    that.systemUserList.push({
+                                        value: item,
+                                        label: item
+                                    });
+                                })
+                            }
+                        }
+                    })
+                    .catch(function (response) {
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
             }
+        },
+        mounted: function () {
+            let that = this;
+            that.getConditions();
         }
 	}
 </script>

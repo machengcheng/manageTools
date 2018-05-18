@@ -11,23 +11,23 @@
         <el-row>
             <el-col :span="16" class="pd10">
                 <div class="block-item" style="min-height: 272px;">
-                    <div class="block-title">Default</div>
+                    <div class="block-title">{{userGroupDetailData.name}}</div>
                     <ul class="info-list">
                         <li class="info-item">
                             <span class="tips">名称:</span>
-                            <span class="detail">Default</span>
+                            <span class="detail">{{userGroupDetailData.name}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建者:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{userGroupDetailData.created_by}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建日期:</span>
-                            <span class="detail">2018年4月11日 16:57</span>
+                            <span class="detail">{{userGroupDetailData.date_created}}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">备注:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{userGroupDetailData.comment}}</span>
                         </li>
                     </ul>
                 </div>
@@ -90,7 +90,7 @@
                     .then(function (response) {
                         let data = response;
                         if (data.status === 200) {
-                            that.userGroupDetailData = data.data.results.length > 0 ? data.data.results : [];
+                            that.userGroupDetailData = data.data.results.length > 0 ? data.data.results[0] : [];
                         }
                         that.isLoading = false;
                     })

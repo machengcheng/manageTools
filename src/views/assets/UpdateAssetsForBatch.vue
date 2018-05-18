@@ -94,7 +94,6 @@
                                 prop="nodeManage"
                             >
                                 <el-select
-                                    id="userGroup"
                                     v-model="updateAssetsForBatchForm.nodeManage"
                                     filterable
                                     multiple
@@ -331,6 +330,9 @@
                                         value: item.id,
                                         label: item.value
                                     });
+                                    if (item.value === 'ROOT') {
+                                        that.updateAssetsForBatchForm.nodeManage.push(item.id);
+                                    }
                                 });
                             }
                         }
@@ -343,8 +345,33 @@
                         });
                     });
             },
-            update: function () {
+            update: async function () {
+                let that = this;
+                let asset_ids = that.updateAssetsForBatchForm.assets.join(',');
+                let params = {
+                    port: that.updateAssetsForBatchForm.port,
+                    admin_user: that.updateAssetsForBatchForm.manageUser,
+                    labels: that.updateAssetsForBatchForm.label,
+                    nodes: that.updateAssetsForBatchForm.nodeManage,
+                    platform: that.updateAssetsForBatchForm.platform
+                };
 
+                for (let index in params) {
+                    if(!params[index] || params[index].length === 0) {
+                        delete params[index];
+                    }
+                }
+
+                that.isLoading = true;
+                const res = await that.$axios.post('http://localhost:8000/api/assets/multi-update/asset/?asset_ids=' + asset_ids, params);
+                if (res.status === 200) {
+                    that.$message({
+                        message: '操作成功',
+                        type: 'success'
+                    });
+                    that.isLoading = false;
+                    this.$router.push({path: '/home/assetsList' });
+                }
             }
         },
         mounted: function () {

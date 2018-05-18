@@ -3,31 +3,31 @@
         <el-row>
             <el-col :span="16" class="pd10">
                 <div class="block-item" style="min-height: 300px;">
-                    <div class="block-title">yeexuncoco</div>
+                    <div class="block-title">{{ terminalDetailData.name}}</div>
                     <ul class="info-list">
                         <li class="info-item">
                             <span class="tips">名称:</span>
-                            <span class="detail">yeexuncoco</span>
+                            <span class="detail">{{ terminalDetailData.name }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">远端地址:</span>
-                            <span class="detail">127.0.0.1</span>
+                            <span class="detail">{{ terminalDetailData.remote_addr }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">SSH端口:</span>
-                            <span class="detail">2222</span>
+                            <span class="detail">{{ terminalDetailData.ssh_port }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">HTTP端口:</span>
-                            <span class="detail">5000</span>
+                            <span class="detail">{{ terminalDetailData.http_port }}</span>
                         </li>
                         <li class="info-item">
                             <span class="tips">创建日期:</span>
-                            <span class="detail">2018年4月18日 11:35</span>
+                            <span class="detail"></span>
                         </li>
                         <li class="info-item">
                             <span class="tips">备注:</span>
-                            <span class="detail"></span>
+                            <span class="detail">{{ terminalDetailData.comment }}</span>
                         </li>
                     </ul>
                 </div>
@@ -45,16 +45,41 @@
         props: ['terminalDetailVisible'],
 		data() {
 			return {
-
+                terminalDetailData: []
             }
 		},
-        terminalDetailVisible: function (newVal, oldVal) {
-            if(newVal != oldVal) {
-
+        watch: {
+            terminalDetailVisible: function (newVal, oldVal) {
+                if (newVal != oldVal) {
+                    this.getData();
+                }
             }
         },
 		methods: {
-
+            getData: async function() {
+                let that = this;
+                let terminalId = that.$route.query.terminalId;
+                this.isLoading = true;
+                that.$axios.get('http://localhost:8000/api/terminal/terminal/' + terminalId + '/', {})
+                    .then(function (response) {
+                        let data = response;
+                        if (data.status === 200) {
+                            that.terminalDetailData = data.data ? data.data : [];
+                        }
+                        that.isLoading = false;
+                    })
+                    .catch(function (response) {
+                        that.isLoading = false;
+                        that.$message({
+                            message: '未知异常',
+                            type: 'error',
+                            duration: 1500
+                        });
+                    });
+            }
+        },
+        mounted: function () {
+            this.getData();
         }
 	}
 </script>

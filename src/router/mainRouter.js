@@ -378,6 +378,14 @@ export default [
                         meta: {
                             title: '终端详情'
                         }
+                    },
+                    {
+                        path: 'updateTerminal',
+                        name: '更新终端',
+                        component: resolve => require(['views/session/UpdateTerminal.vue'], resolve),
+                        meta: {
+                            title: '更新终端'
+                        }
                     }
                 ]
             },

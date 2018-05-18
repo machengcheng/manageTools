@@ -97,11 +97,15 @@
                 let that = this;
                 that.addOrUpdateLabelDialogForm.name = '';
                 that.addOrUpdateLabelDialogForm.value = '';
-                that.addOrUpdateLabelDialogForm.assets.splice(0, this.addOrUpdateLabelDialogForm.assets.length);
+                if (that.addOrUpdateLabelDialogForm.assets.length > 0) {
+                    that.addOrUpdateLabelDialogForm.assets.splice(0, this.addOrUpdateLabelDialogForm.assets.length);
+                }
                 if(newVal != oldVal && that.addOrUpdate === 'update') {
                     this.getLabelDetail();
                 } else {
-                    that.addOrUpdateLabelDialogForm.datas.splice(0, this.addOrUpdateLabelDialogForm.datas.length);
+                    if (that.addOrUpdateLabelDialogForm.assets.length > 0) {
+                        that.addOrUpdateLabelDialogForm.assets.splice(0, this.addOrUpdateLabelDialogForm.assets.length);
+                    }
                 }
             }
         },

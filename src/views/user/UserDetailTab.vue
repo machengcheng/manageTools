@@ -145,7 +145,7 @@
         watch: {
             userDetailVisible: function (newVal, oldVal) {
                 if(newVal != oldVal) {
-
+                    this.getData();
                 }
             }
         },
