@@ -60,8 +60,8 @@
         .outer-container {
             height: 100%;
             .nav-aside {
-                width: 220px!important;
-                min-width: 220px!important;
+                width: 200px!important;
+                min-width: 200px!important;
                 background: #333743;
                 position: relative;
                 text-align: left;

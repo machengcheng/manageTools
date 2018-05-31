@@ -173,8 +173,8 @@ ul, li {
 	height: 100%;
 }
 .homeAside {
-	width: 220px!important;
-	min-width: 220px!important;
+	width: 200px!important;
+	min-width: 200px!important;
 	background: #29333D;
 	position: relative;
 	.homeAsideInner {
@@ -222,3 +222,14 @@ ul, li {
 /**
  * PageHome.vue样式结束
  */
+
+.tip {
+    color: $tip;
+}
+
+a.link:link,
+a.link:visited,
+a.link:hover {
+    color: $link!important;
+    text-decoration: none;
+}

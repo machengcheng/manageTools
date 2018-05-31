@@ -22,7 +22,7 @@
                             </el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="12">==={{addUserGroupDialogForm.user}}
                         <el-form-item
                             label="用户: "
                             prop="user"
@@ -158,6 +158,7 @@
             },
             getUserGroupDetail: function () {
                 let that = this;
+                that.addUserGroupDialogForm.user.splice(0, that.addUserGroupDialogForm.user.length);
                 that.datas = that.updateData;
                 that.addUserGroupDialogForm.name  = that.updateData.name;
                 if (that.updateData.users.length > 0) {
@@ -171,7 +172,7 @@
                 var that = this;
                 let params = {
                     name: that.addUserGroupDialogForm.name,
-                    users: that.addUserGroupDialogForm.user,
+                    user: that.addUserGroupDialogForm.user.join(','),
                     comment: that.addUserGroupDialogForm.remark
                 };
                 this.isLoading = true;
@@ -190,7 +191,7 @@
                 let that = this;
                 let params = {
                     name: that.addUserGroupDialogForm.name,
-                    users: that.addUserGroupDialogForm.user,
+                    user: that.addUserGroupDialogForm.user.join(','),
                     comment: that.addUserGroupDialogForm.remark,
                 };
 

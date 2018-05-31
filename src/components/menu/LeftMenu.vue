@@ -1,7 +1,7 @@
 <template>
     <section>
-        <div style="width: 210px;background-color: transparent;">
-            <img src="../../assets/imgs/logo-text1.png" style="display: inline-block;width: 220px;height: 55px;border: 0;padding: 0;margin: 0;" />
+        <div style="width: 200px;background-color: transparent;">
+            <img src="../../assets/imgs/logo-text1.png" style="display: inline-block;width: 200px;height: 55px;border: 0;padding: 0;margin: 0;" />
         </div>
         <el-menu
             class="el-menu-vertical-demo"
@@ -136,6 +136,28 @@
         span {
             position: relative;
             top: 2px!important;
+        }
+    }
+    //css代码
+    .el-menu-item {
+        border:0;
+        /*自定义，必要时用!important*/
+        .el-icon-document:before {
+            /*display: inline-block;*/
+            /*width: 18px;*/
+            /*height: 18px;*/
+            /*background: #f00!important;*/
+            /*content: '';*/
+        }
+    }
+    .el-menu-item.is-active {
+        /*自定义，必要时用!important*/
+        .el-icon-document:before {
+            /*display: inline-block;*/
+            /*width: 18px;*/
+            /*height: 18px;*/
+            /*background: #ff0!important;*/
+            /*content: '';*/
         }
     }
     .second-list {

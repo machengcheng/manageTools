@@ -54,6 +54,14 @@ export default [
                         meta: {
                             title: '创建或更新用户'
                         }
+                    },
+                    {
+                        path: 'updateUserForBatch',
+                        name: '批量更新用户',
+                        component: resolve => require(['views/user/UpdateUserForBatch.vue'], resolve),
+                        meta: {
+                            title: '批量更新用户'
+                        }
                     }
                 ]
             },
@@ -280,7 +288,8 @@ export default [
                         name: '资产授权列表',
                         component: resolve => require(['views/auth/AssetsAuthListDefault.vue'], resolve),
                         meta: {
-                            title: '资产授权列表'
+                            title: '资产授权列表',
+                            requireAuth: true
                         }
                     },
                     {

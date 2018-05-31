@@ -4,7 +4,7 @@
         <div class="box-title">用户列表</div>
         <div class="box-operate">
             <el-button type="primary" size="small" @click="createUser();">创建用户</el-button>
-            <el-button size="small" class="fr">导出</el-button>
+            <el-button size="small" class="fr" @click="exportClick" :disabled="isExporting">导出</el-button>
             <el-button size="small" class="fr" @click="importClick">导入</el-button>
             <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
             <el-input v-model="searchKey" size="small" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
@@ -102,6 +102,7 @@
                 size="small"
                 plain
                 :disabled="!operateType || multipleSelection.length === 0"
+                @click="submitOperate"
             >
                 提交
             </el-button>
@@ -127,6 +128,9 @@
                 isLoading: false,
                 tableData: [],
                 multipleSelection: [],
+                userIds: [],
+                isExporting: false,
+                exportUrl: '',
                 operateTypes: [
                     {
                         value: '1',
@@ -170,6 +174,7 @@
             getData: async function() {
                 let that = this;
                 let params = {
+                    keyword: that.searchKey,
                     limit: that.pageSize,
                     offset: that.pageSize*(that.page-1),
                     type: 'get'
@@ -208,6 +213,134 @@
             },
             importClick: function () {
                 this.importDialogVisible = true;
+            },
+            exportClick: async function () {
+                let that = this;
+                that.userIds.splice(0, that.userIds.length);
+                that.multipleSelection.forEach(function (item) {
+                    that.userIds.push(item.id);
+                });
+
+                let params = {
+                    users_id: that.userIds
+                };
+                this.isExporting = true;
+                const res = await that.$axios.post('http://localhost:8000/users/user/export/', params);
+                if (res.status === 200) {
+                    that.exportUrl = res.data.redirect;
+                    window.location.href = 'http://localhost:8000' + res.data.redirect;
+                    this.isExporting = false;
+                    that.$message({
+                        message: '导出成功',
+                        type: 'success'
+                    });
+                }
+            },
+            //批量操作
+            submitOperate: function () {
+                let that = this;
+                let operateType = that.operateType;
+                switch(operateType) {
+                    case '1': //批量删除
+                        that.deleteBatch();
+                        break;
+                    case '2':  //批量更新
+                        that.updateBatch();
+                        break;
+                    case '3': //批量禁用所选
+                        that.disabledBatch();
+                        break;
+                    case '4': //批量激活所选
+                        that.activeBatch();
+                        break;
+                    default:
+                        break;
+                }
+            },
+            //批量删除
+            deleteBatch: async function () {
+                let that = this;
+                let assets = [];
+                that.multipleSelection.forEach(function (item) {
+                    assets.push(item.id);
+                });
+                let params = {
+                    id__in: assets.join(',')
+                };
+                const res = await that.$axios.delete('http://localhost:8000/api/users/user/', { params: params});
+                if (res.status === 204) {
+                    this.$message({
+                        type: 'success',
+                        message: '操作成功',
+                        duration: 1500
+                    });
+                } else {
+                    this.$message({
+                        type: 'info',
+                        message: '删除失败',
+                        duration: 1500
+                    });
+                }
+                that.operateType = '';
+                that.search();
+            },
+            //批量激活所选
+            activeBatch: async function () {
+                let that = this;
+                let users = [];
+                that.multipleSelection.forEach(function (item) {
+                    users.push({
+                        pk: item.id,
+                        is_active: true
+                    });
+                });
+                let params = {
+                    users: users
+                };
+                const res = await that.$axios.patch('http://localhost:8000/api/users/user/', params.users);
+                if (res.status === 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '操作成功',
+                        duration: 1500
+                    });
+                }
+                that.operateType = '';
+                that.search();
+            },
+            //批量禁用所选
+            disabledBatch: async function () {
+                let that = this;
+                let users = [];
+                that.multipleSelection.forEach(function (item) {
+                    users.push({
+                        pk: item.id,
+                        is_active: false
+                    });
+                });
+                let params = {
+                    users: users
+                };
+                const res = await that.$axios.patch('http://localhost:8000/api/users/user/', params.users);
+                if (res.status === 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '操作成功',
+                        duration: 1500
+                    });
+                }
+                that.operateType = '';
+                that.search();
+            },
+            //批量更新
+            updateBatch: function () {
+                let that = this;
+                let users = [];
+                that.multipleSelection.forEach(function (item) {
+                    users.push(item.id);
+                });
+
+                this.$router.push({path: '/home/userList/updateUserForBatch', query: { users: users }});
             },
             importDialogVisibleStatus: function () {
                 this.importDialogVisible = false;
