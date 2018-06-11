@@ -78,3 +78,37 @@ $tip: #ed5565;
  * 超链接
  */
 $link: #409EFF;
+
+/**
+ * 通用按钮样式
+ */
+
+/** 开始 **/
+$createBtnFontSize: 13px;
+$createBtnColor: #FFF;
+$createBtnBg: #E96373;
+$createBtnBorderRadius: 2px;
+$createBtnBorderColor: #E96373;
+/** 结束 **/
+
+
+/** 开始 **/
+$updateBtnFontSize: 13px;
+$updateBtnColor: #86939E;
+$updateBtnBg: rgba(246,248,249,1);
+$updateBtnBorderRadius: 2px;
+$updateBtnBorderWidth: 1px;
+$updateBtnBorderStyle: solid;
+$updateBtnBorderColor: rgba(210, 214, 222, 1);
+
+
+$updateBtnHoverFontSize: 13px;
+$updateBtnHoverColor: #f56c6c;
+$updateBtnHoverBg: #fef0f0;
+$updateBtnHoverBorderRadius: 2px;
+$updateBtnHoverBorderWidth: 1px;
+$updateBtnHoverBorderStyle: solid;
+$updateBtnHoverBorderColor: #fbc4c4;
+/** 结束 **/
+
+

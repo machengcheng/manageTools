@@ -233,3 +233,88 @@ a.link:hover {
     color: $link!important;
     text-decoration: none;
 }
+
+
+.dotY {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #36C9A9;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: 1px solid #16A085;
+}
+.dotYText {
+    width: 26px;
+    height: 50px;
+    font-size: 13px;
+    color:rgba(22,160,133,1);
+    margin-left: 3px;
+}
+
+.dotN {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #FFE1D6;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    border: 1px solid #F59A78;
+}
+.dotNText {
+    width: 26px;
+    height: 50px;
+    font-size: 13px;
+    color:rgba(242,120,75,1);
+    margin-left: 3px;
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+    background-color: #EB0124!important;
+    border-color: #EB0124!important;
+}
+.el-checkbox__input.is-checked+.el-checkbox__label {
+    color: #EB0124!important;
+}
+.el-checkbox__input.is-focus .el-checkbox__inner {
+    border-color: #EB0124!important;
+}
+
+
+/**
+ * 通用按钮样式
+ */
+.createBtn, .createBtn:hover {
+    font-size: $createBtnFontSize;
+    color: $createBtnColor;
+    background: $createBtnBg;
+    -webkit-border-radius: $createBtnBorderRadius;
+    -moz-border-radius: $createBtnBorderRadius;
+    border-radius: $createBtnBorderRadius;
+    border-color: $createBtnBorderColor;
+}
+
+.updateBtn {
+    font-size: $updateBtnFontSize!important;
+    color: $updateBtnColor!important;
+    background: $updateBtnBg!important;
+    -webkit-border-radius: $updateBtnBorderRadius!important;
+    -moz-border-radius: $updateBtnBorderRadius!important;
+    border-radius: $updateBtnBorderRadius!important;
+    border: $updateBtnBorderWidth $updateBtnBorderStyle $updateBtnBorderColor!important;
+}
+.updateBtn:hover {
+    font-size: $updateBtnHoverFontSize!important;
+    color: $updateBtnHoverColor!important;
+    background: $updateBtnHoverBg!important;
+    -webkit-border-radius: $updateBtnHoverBorderRadius!important;
+    -moz-border-radius: $updateBtnHoverBorderRadius!important;
+    border-radius: $updateBtnHoverBorderRadius!important;
+    border: $updateBtnHoverBorderWidth $updateBtnHoverBorderStyle $updateBtnHoverBorderColor!important;
+    -webkit-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    -moz-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    -o-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+}

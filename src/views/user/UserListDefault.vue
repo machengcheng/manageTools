@@ -3,7 +3,7 @@
         <import-dialog :importDialogVisible="importDialogVisible" @importDialogVisibleEvent="importDialogVisibleStatus"></import-dialog>
         <div class="box-title">用户列表</div>
         <div class="box-operate">
-            <el-button type="primary" size="small" @click="createUser();">创建用户</el-button>
+            <el-button type="primary" size="small" @click="createUser();" class="createBtn">创建用户</el-button>
             <el-button size="small" class="fr" @click="exportClick" :disabled="isExporting">导出</el-button>
             <el-button size="small" class="fr" @click="importClick">导入</el-button>
             <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
@@ -55,7 +55,9 @@
                     label="激活中"
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" size="small">{{ scope.row.is_active ? '是' : '否' }}</el-button>
+                        <span v-if="scope.row.is_active" class="dotY"></span><span class="dotYText" v-if="scope.row.is_active">是</span>
+                        <span v-if="!scope.row.is_active" class="dotN"></span><span class="dotNText" v-if="!scope.row.is_active">否</span>
+                        <!--<el-button type="text" size="small">{{ scope.row.is_active ? '是' : '否' }}</el-button>-->
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -68,6 +70,7 @@
                             type="primary"
                             size="mini"
                             plain
+                            class="updateBtn"
                             @click="updateUser(scope.$index, scope.row)"
                         >
                             更新

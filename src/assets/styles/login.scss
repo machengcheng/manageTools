@@ -1,24 +1,55 @@
-.login-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    background-clip: padding-box;
-    margin: 0 auto;
-    width: 350px;
-    padding: 35px 35px 15px 35px;
-    background: #fff;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
-    .title {
-        margin: 0px auto 40px auto;
-        text-align: center;
-        color: #505458;
-    }
-    .remember {
-        margin: 0px 0px 35px 0px;
+.login-body {
+    width: 100%;
+    background: transparent url("../../assets/imgs/login-bg.png") no-repeat;
+    height: 100%;
+    background-size: 100% 100%;
+    .login-container {
+        .login-icon-block {
+            text-align: center;
+            .login-icon {
+                display: inline-block;
+                width: 63px;
+                height: 46px;
+                background: url("../../assets/imgs/login-icon.png") no-repeat;
+            }
+        }
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        -moz-border-radius: 4px;
+        background-clip: padding-box;
+        margin: 0 auto;
+        width: 350px;
+        padding: 35px 35px 15px 35px;
+        background: #fff;
+        border: 1px solid #eaeaea;
+        box-shadow:0 4px 12px 0 rgba(251,210,205,1);
+        .login-btn {
+            opacity: 1.0;
+            filter: alpha(opacity=100);
+            background: linear-gradient(-90deg, rgba(252,103,97,1), rgba(219,3,23,1), rgba(235,1,36,1));
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            border: 0!important;
+        }
+        .login-btn:hover {
+            opacity: 0.7;
+            filter: alpha(opacity=70);
+        }
+        .title {
+            margin: 0px auto 40px auto;
+            text-align: center;
+            font-size: 17px;
+            color: #E30000;
+            line-height: 24px;
+
+        }
+        .remember {
+            margin: 0px 0px 35px 0px;
+        }
     }
 }

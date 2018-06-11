@@ -194,6 +194,7 @@
                 let nodeItem =
                     <span class="nodeItem">
                         <span>
+                            <span class="button ico_docu"></span>
                             <span>{node.label}</span>
                         </span>
                     </span>;
@@ -202,6 +203,7 @@
                     nodeItem =
                             <span class="nodeItem">
                                 <span class="curSelectedNode">
+                                    <span class="button ico_docu"></span>
                                     <span>{node.label}</span>
                                 </span>
                             </span>;
@@ -434,6 +436,42 @@
         .nodeOpt {
             display: none!important;
             margin-left: 10px;
+        }
+        //css代码
+        .el-tree-node__expand-icon {
+            border:0;
+            padding: 0;
+            /*background: url("../../assets/imgs/node.png") no-repeat;*/
+            /*自定义，必要时用!important*/
+        }
+        .el-tree-node__expand-icon.expanded {
+            /*cursor: pointer;*/
+            /*自定义，必要时用!important*/
+        }
+        .el-tree-node__expand-icon.is-leaf {
+            /*cursor: pointer;*/
+            /*自定义，必要时用!important*/
+        }
+        span.button {
+            line-height: 0;
+            margin: -4px 2px 0 0;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            vertical-align: top;
+            border: 0 solid;
+            cursor: pointer;
+            outline: none;
+            background-repeat: no-repeat;
+            background-image: url("../../assets/imgs/node.png");
+            background-attachment: scroll;
+        }
+        span.button.ico_docu::before {
+            background: url("../../assets/imgs/node.png") no-repeat;
+            padding-top: 9px;
+            padding-left: 0;
+            display: inline-block;
         }
     }
 </style>

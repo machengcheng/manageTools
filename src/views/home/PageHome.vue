@@ -105,12 +105,12 @@
         font-size: 13px;
     }
     .el-aside {
-        background-color: #D3DCE6;
+        background-color: #333743;
         color: #333;
         text-align: center;
     }
     .el-main {
-        background-color: #E9EEF3;
+        background-color: #333743;
         color: #333;
     }
     body > .el-container {
