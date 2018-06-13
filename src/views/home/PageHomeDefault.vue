@@ -20,7 +20,7 @@
             <el-col :span="6" class="pd10">
                 <div class="item-box index-host-all">
                     <div class="pd15">
-                        <span class="index-link-item">2</span>
+                        <span class="index-link-item">6</span>
                         <span class="fr">
                             <img src="../../assets/imgs/all-host-icon.png" />
                         </span>
@@ -36,7 +36,7 @@
             <el-col :span="6" class="pd10">
                 <div class="item-box index-online-user-all">
                     <div class="pd15">
-                        <span class="index-link-item">0</span>
+                        <span class="index-link-item">12</span>
                         <span class="fr">
                             <img src="../../assets/imgs/online-user-icon.png" />
                         </span>
@@ -52,7 +52,7 @@
             <el-col :span="6" class="pd10">
                 <div class="item-box index-connected-host-all">
                     <div class="pd15">
-                        <span class="index-link-item">0</span>
+                        <span class="index-link-item">15</span>
                         <span class="fr">
                             <img src="../../assets/imgs/connected-icon.png" />
                         </span>
@@ -288,6 +288,9 @@
                         trigger: 'axis'
                     },
                     legend: {
+                        icon: 'circle',  //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'
+                        itemWidth: 12,
+                        itemHeight: 12,
                         data: ['登录次数', '活跃用户', '活跃资产'],
                         selectedMode: true,  //图例选择的模式(是否可以点击)
                         top: 0,
@@ -352,24 +355,35 @@
                             //单个拐点标志的样式设置
                             itemStyle: {
                                 color: '#6FBED8'   //图形的颜色
+                            },
+                            lineStyle: {
+                                width: 3
                             }
                         },
                         {
                             name: '活跃用户',
                             type: 'line',
                             stack: '总量',
+                            symbol: 'circle',
                             data: [220, 182, 191, 234, 290, 330, 310],
                             itemStyle: {
                                 color: '#F184AE'
+                            },
+                            lineStyle: {
+                                width: 3
                             }
                         },
                         {
                             name: '活跃资产',
                             type: 'line',
                             stack: '总量',
+                            symbol: 'circle',
                             data: [820, 932, 901, 934, 1290, 1330, 1320],
                             itemStyle: {
                                 color: '#F59A78'
+                            },
+                            lineStyle: {
+                                width: 3
                             }
                         }
                     ]
@@ -391,6 +405,7 @@
                         selectedMode: false,  //图例选择的模式(是否可以点击)
                         bottom: 0,
                         x: 'center',
+                        icon: 'circle',
                         itemWidth: 10,
                         itemHeight: 10,
                         itemGap: 1,
@@ -476,6 +491,7 @@
                         selectedMode: false,  //图例选择的模式(是否可以点击)
                         bottom: 0,
                         x: 'center',
+                        icon: 'circle',
                         itemWidth: 10,
                         itemHeight: 10,
                         itemGap: 1,

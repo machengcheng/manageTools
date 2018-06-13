@@ -1,6 +1,6 @@
 <template>
     <section class="add-or-update-gateway-section">
-        <div class="box-title mb20">{{this.$route.query.addOrUpdate == 'add' ? '创建网关' : '更新网关'}}<el-button type="text" size="small" @click="goBack" class="fr" style="height: 48px;margin: 0 20px;">返回</el-button></div>
+        <div class="box-title mb20">{{this.$route.query.addOrUpdate == 'add' ? '创建网关' : '更新网关'}}<el-button type="text" size="small" @click="goBack" class="fr tip-text" style="height: 48px;margin: 0 20px;">返回</el-button></div>
         <div class="box-content">
             <el-form :model="addOrUpdateGatewayForm" :rules="rules" ref="addOrUpdateGatewayForm" class="demo-form-inline" label-width="120px">
                 <div class="content">
@@ -123,7 +123,7 @@
                                 :limit="3"
                                 :on-exceed="handleExceed"
                                 :file-list="fileList">
-                                <el-button size="small" type="primary">点击上传</el-button>
+                                <el-button size="small" type="primary" class="danger-button">点击上传</el-button>
                                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                             </el-upload>
                         </el-form-item>
@@ -148,8 +148,8 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" align="center">
-                        <el-button>取 消</el-button>
-                        <el-button type="primary" @click="submitForm('addOrUpdateGatewayForm')" :loading="isLoading">确 定</el-button>
+                        <el-button class="default-button">取 消</el-button>
+                        <el-button type="primary" class="danger-button" @click="submitForm('addOrUpdateGatewayForm')" :loading="isLoading">确 定</el-button>
                     </el-col>
                     <div class="clear"></div>
                 </div>
@@ -414,7 +414,7 @@
                 margin-bottom: 20px;
                 .item-title {
                     display: inline-block;
-                    border-bottom: 2px solid #409eff;
+                    border-bottom: 2px solid #E96373;
                 }
             }
             .el-input .el-input__inner {

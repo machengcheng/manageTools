@@ -3,8 +3,8 @@
         <add-or-update-network-dialog :updateData="updateData" :updateStatus="updateStatus" :addOrUpdateNetworkDialogVisible="addOrUpdateNetworkDialogVisible" @addOrUpdateNetworkDialogEvent="updateDialogStatus" :addOrUpdate="addOrUpdate"></add-or-update-network-dialog>
         <div class="box-title">网域列表</div>
         <div class="box-operate">
-            <el-button type="primary" size="small" @click="createNetwork();">创建网域</el-button>
-            <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
+            <el-button type="primary" size="small" class="danger-button" @click="createNetwork();">创建网域</el-button>
+            <el-button  type="primary" size="small" @click="search" class="danger-button fr mr20">查询</el-button>
             <el-input v-model="searchKey" size="small" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
         </div>
         <div class="box-content">
@@ -28,7 +28,7 @@
                     show-overflow-tooltip
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="networkDetail(scope.$index, scope.row)" size="small">{{ scope.row.name }}</el-button>
+                        <el-button type="text" class="link-text" @click="networkDetail(scope.$index, scope.row)" size="small">{{ scope.row.name }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -61,6 +61,7 @@
                         <el-button
                             type="primary"
                             size="mini"
+                            class="default-button"
                             plain
                             @click="updateUNetwork(scope.$index, scope.row)"
                         >
@@ -69,6 +70,7 @@
                         <el-button
                             type="danger"
                             size="mini"
+                            class="default-button"
                             plain
                             @click="deleteNetwork(scope.$index, scope.row)"
                         >
@@ -197,6 +199,8 @@
                 that.$confirm('删除该记录?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    cancelButtonClass: 'default-button',
+                    confirmButtonClass: 'danger-button',
                     type: 'warning'
                 }).then(() => {
                     that.deleteNetworkFunc(index, row);

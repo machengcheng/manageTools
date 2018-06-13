@@ -1,8 +1,8 @@
 <template>
     <section class="gateway-detail-tab-section">
         <div class="box-operate">
-            <el-button type="primary" size="small" @click="createGateway">创建网关</el-button>
-            <el-button  type="primary" size="small" @click="search" class="fr">查询</el-button>
+            <el-button type="primary" size="small" @click="createGateway" class="danger-button">创建网关</el-button>
+            <el-button  type="primary" size="small" @click="search" class="fr danger-button">查询</el-button>
             <el-input v-model="searchKey" size="small" class="searchKey wat fr mr20" placeholder="请输入查询内容"></el-input>
         </div>
         <div class="box-content">
@@ -64,6 +64,7 @@
                         <el-button
                             type="primary"
                             size="mini"
+                            class="default-button"
                             plain
                             @click="updateGateway(scope.$index, scope.row)"
                         >
@@ -72,6 +73,7 @@
                         <el-button
                             type="danger"
                             size="mini"
+                            class="default-button"
                             plain
                             @click="deleteGateway(scope.$index, scope.row)"
                         >
@@ -188,6 +190,8 @@
                 that.$confirm('删除该记录?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    cancelButtonClass: 'default-button',
+                    confirmButtonClass: 'danger-button',
                     type: 'warning'
                 }).then(() => {
                     that.deleteGatewayFunc(index, row);

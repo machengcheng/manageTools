@@ -1,7 +1,7 @@
 <template>
-    <section>
-        <div style="width: 200px;background-color: transparent;">
-            <img src="../../assets/imgs/logo-text1.png" style="display: inline-block;width: 200px;height: 55px;border: 0;padding: 0;margin: 0;" />
+    <section class="left-menu-section">
+        <div class="left-menu-logo">
+            <img src="../../assets/imgs/left-menu-logo2.png" />
         </div>
         <el-menu
             class="el-menu-vertical-demo"
@@ -129,305 +129,330 @@
 </script>
 
 <style lang="scss" scoped>
-    .el-menu {
-        border-right: 0;
-        li.is-active {
-            background: #3E4456!important;
-        }
-    }
-    .el-menu-item {
-        span {
-            position: relative;
-            top: 2px!important;
-        }
-    }
-    //css代码
-    .el-menu-item {
-        border:0;
-        /*自定义，必要时用!important*/
-        .el-icon-document:before {
-            display: inline-block;
-            width: 18px;
-            height: 14px;
-            content: '';
-        }
-        .icon-panel:before {
-            background: url("../../assets/imgs/icon-panel-normal.png") no-repeat;
-            content: '';
-        }
-        .icon-system-settings {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-system-settings:before {
-            height: 18px!important;
-            background: url("../../assets/imgs/icon-system-settings-normal.png") no-repeat;
-            content: '';
-        }
-        .icon-user-list {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-user-list:before {
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-user-list.png") no-repeat;
-            content: '';
-        }
-        .icon-login-log {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-login-log:before {
-            width: 16px!important;
-            height: 16px!important;
-            background: url("../../assets/imgs/icon-login-log.png") no-repeat;
-            content: '';
-        }
-        .icon-assets-list {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-assets-list:before {
-            height: 18px!important;
-            background: url("../../assets/imgs/icon-assets-list.png") no-repeat;
-            content: '';
-        }
-        .icon-user-group {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-user-group:before {
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-user-group.png") no-repeat;
-            content: '';
-        }
-        .icon-assets-auth {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-assets-auth:before {
-            width: 19px!important;
-            height: 18px!important;
-            background: url("../../assets/imgs/icon-assets-auth.png") no-repeat;
-            content: '';
-        }
-        .icon-network-list {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-network-list:before {
-            height: 18px!important;
-            background: url("../../assets/imgs/icon-network-list.png") no-repeat;
-            content: '';
-        }
-        .icon-manage-user {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-manage-user:before {
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-manage-user.png") no-repeat;
-            content: '';
-        }
-        .icon-system-user {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-system-user:before {
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-system-user.png") no-repeat;
-            content: '';
-        }
-        .icon-online-session {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-online-session:before {
-            height: 16px!important;
-            background: url("../../assets/imgs/icon-online-session.png") no-repeat;
-            content: '';
-        }
-        .icon-history-session {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-history-session:before {
-            height: 16px!important;
-            background: url("../../assets/imgs/icon-history-session.png") no-repeat;
-            content: '';
-        }
-        .icon-command-record {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-command-record:before {
-            width: 16px!important;
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-command-record.png") no-repeat;
-            content: '';
-        }
-        .icon-web-terminal {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-web-terminal:before {
-            width: 16px!important;
-            height: 14px!important;
-            background: url("../../assets/imgs/icon-web-terminal.png") no-repeat;
-            content: '';
-        }
-        .icon-terminal-manage {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-terminal-manage:before {
-            width: 16px!important;
-            height: 14px!important;
-            background: url("../../assets/imgs/icon-terminal-manage.png") no-repeat;
-            content: '';
-        }
-        .icon-label-manage {
-            margin-right: 0!important;
-            text-align: left!important;
-        }
-        .icon-label-manage:before {
-            width: 16px!important;
-            height: 17px!important;
-            background: url("../../assets/imgs/icon-label-manage.png") no-repeat;
-            content: '';
-        }
-        span {
-            color: #E1E5EC;
-        }
-    }
-    .el-menu-item.is-active {
-        /*自定义，必要时用!important*/
-        .el-icon-document:before {
-            display: inline-block;
-            width: 18px;
-            height: 14px;
-        }
-        .icon-panel:before {
-            background: url("../../assets/imgs/icon-panel-active.png") no-repeat;
-            content: '';
-        }
-        .icon-system-settings:before {
-            height: 18px!important;
-            background: url("../../assets/imgs/icon-system-settings-active.png") no-repeat;
-            content: '';
-        }
-        .icon-user-list:before {
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-user-list.png") no-repeat;
-            content: '';
-        }
-        .icon-login-log:before {
-            width: 16px!important;
-            height: 16px!important;
-            background: url("../../assets/imgs/icon-login-log.png") no-repeat;
-            content: '';
-        }
-        .icon-assets-list:before {
-            height: 18px!important;
-            background: url("../../assets/imgs/icon-assets-list.png") no-repeat;
-            content: '';
-        }
-        .icon-user-group:before {
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-user-group.png") no-repeat;
-            content: '';
-        }
-        .icon-assets-auth:before {
-            width: 19px!important;
-            height: 18px!important;
-            background: url("../../assets/imgs/icon-assets-auth.png") no-repeat;
-            content: '';
-        }
-        .icon-network-list:before {
-            height: 18px!important;
-            background: url("../../assets/imgs/icon-network-list.png") no-repeat;
-            content: '';
-        }
-        .icon-manage-user:before {
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-manage-user.png") no-repeat;
-            content: '';
-        }
-        .icon-system-user:before {
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-system-user.png") no-repeat;
-            content: '';
-        }
-        .icon-online-session:before {
-            height: 16px!important;
-            background: url("../../assets/imgs/icon-online-session.png") no-repeat;
-            content: '';
-        }
-        .icon-history-session:before {
-            height: 16px!important;
-            background: url("../../assets/imgs/icon-history-session.png") no-repeat;
-            content: '';
-        }
-        .icon-command-record:before {
-            width: 16px!important;
-            height: 15px!important;
-            background: url("../../assets/imgs/icon-command-record.png") no-repeat;
-            content: '';
-        }
-        .icon-web-terminal:before {
-            width: 16px!important;
-            height: 14px!important;
-            background: url("../../assets/imgs/icon-web-terminal.png") no-repeat;
-            content: '';
-        }
-        .icon-terminal-manage:before {
-            width: 16px!important;
-            height: 14px!important;
-            background: url("../../assets/imgs/icon-terminal-manage.png") no-repeat;
-            content: '';
-        }
-        .icon-label-manage:before {
-            width: 16px!important;
-            height: 17px!important;
-            background: url("../../assets/imgs/icon-label-manage.png") no-repeat;
-            content: '';
-        }
-        span {
-            color: #fff;
-        }
-    }
-    .el-icon-user-manage {
-        display: inline-block;
-        width: 18px;
-        height: 16px;
-        background: url("../../assets/imgs/icon-user-manage-normal.png") no-repeat;
-    }
-    .el-icon-assets-manage {
-        display: inline-block;
-        width: 17px;
-        height: 17px;
-        background: url("../../assets/imgs/icon-assets-manage-normal.png") no-repeat;
-    }
-    .el-icon-permission-manage {
-        display: inline-block;
-        width: 16px;
-        height: 15px;
-        background: url("../../assets/imgs/icon-permission-manage-normal.png") no-repeat;
-    }
-    .el-icon-session-manage {
-        display: inline-block;
-        width: 18px;
-        height: 16px;
-        background: url("../../assets/imgs/icon-session-manage-normal.png") no-repeat;
-    }
-    .second-list {
-        display: inline-block;
-        width: 200px;
-        li {
-            width: 50%;
-            line-height: 2.0em;
+    .left-menu-section {
+        .left-menu-logo {
+            width: 200px;
+            height: 60px;
             text-align: center;
-            float: left;
+            background: transparent;
+            //background: linear-gradient(-90deg,rgba(252,103,97,1),rgba(246,86,84,1),rgba(219,3,23,1),rgba(189,0,28,1));
+            opacity: 0.9;
+            filter: alpha(opacify=90);
+            position: relative;
+            img {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+                /*width: 150px;*/
+                /*height: 33px;*/
+                border: 0;
+                padding: 0;
+                margin: 0;
+                /*position: absolute;*/
+                /*left: 25px;*/
+                /*top: 13.5px;*/
+            }
+        }
+        .el-menu {
+            border-right: 0;
+            li.is-active {
+                background: #3E4456 !important;
+            }
+        }
+        .el-menu-item {
+            span {
+                position: relative;
+                top: 2px !important;
+            }
+        }
+        //css代码
+        .el-menu-item {
+            border: 0;
+            /*自定义，必要时用!important*/
+            .el-icon-document:before {
+                display: inline-block;
+                width: 18px;
+                height: 14px;
+                content: '';
+            }
+            .icon-panel:before {
+                background: url("../../assets/imgs/icon-panel-normal.png") no-repeat;
+                content: '';
+            }
+            .icon-system-settings {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-system-settings:before {
+                height: 18px !important;
+                background: url("../../assets/imgs/icon-system-settings-normal.png") no-repeat;
+                content: '';
+            }
+            .icon-user-list {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-user-list:before {
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-user-list.png") no-repeat;
+                content: '';
+            }
+            .icon-login-log {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-login-log:before {
+                width: 16px !important;
+                height: 16px !important;
+                background: url("../../assets/imgs/icon-login-log.png") no-repeat;
+                content: '';
+            }
+            .icon-assets-list {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-assets-list:before {
+                height: 18px !important;
+                background: url("../../assets/imgs/icon-assets-list.png") no-repeat;
+                content: '';
+            }
+            .icon-user-group {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-user-group:before {
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-user-group.png") no-repeat;
+                content: '';
+            }
+            .icon-assets-auth {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-assets-auth:before {
+                width: 19px !important;
+                height: 18px !important;
+                background: url("../../assets/imgs/icon-assets-auth.png") no-repeat;
+                content: '';
+            }
+            .icon-network-list {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-network-list:before {
+                height: 18px !important;
+                background: url("../../assets/imgs/icon-network-list.png") no-repeat;
+                content: '';
+            }
+            .icon-manage-user {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-manage-user:before {
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-manage-user.png") no-repeat;
+                content: '';
+            }
+            .icon-system-user {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-system-user:before {
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-system-user.png") no-repeat;
+                content: '';
+            }
+            .icon-online-session {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-online-session:before {
+                height: 16px !important;
+                background: url("../../assets/imgs/icon-online-session.png") no-repeat;
+                content: '';
+            }
+            .icon-history-session {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-history-session:before {
+                height: 16px !important;
+                background: url("../../assets/imgs/icon-history-session.png") no-repeat;
+                content: '';
+            }
+            .icon-command-record {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-command-record:before {
+                width: 16px !important;
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-command-record.png") no-repeat;
+                content: '';
+            }
+            .icon-web-terminal {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-web-terminal:before {
+                width: 16px !important;
+                height: 14px !important;
+                background: url("../../assets/imgs/icon-web-terminal.png") no-repeat;
+                content: '';
+            }
+            .icon-terminal-manage {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-terminal-manage:before {
+                width: 16px !important;
+                height: 14px !important;
+                background: url("../../assets/imgs/icon-terminal-manage.png") no-repeat;
+                content: '';
+            }
+            .icon-label-manage {
+                margin-right: 0 !important;
+                text-align: left !important;
+            }
+            .icon-label-manage:before {
+                width: 16px !important;
+                height: 17px !important;
+                background: url("../../assets/imgs/icon-label-manage.png") no-repeat;
+                content: '';
+            }
+            span {
+                color: #E1E5EC;
+            }
+        }
+        .el-menu-item.is-active {
+            /*自定义，必要时用!important*/
+            .el-icon-document:before {
+                display: inline-block;
+                width: 18px;
+                height: 14px;
+            }
+            .icon-panel:before {
+                background: url("../../assets/imgs/icon-panel-active.png") no-repeat;
+                content: '';
+            }
+            .icon-system-settings:before {
+                height: 18px !important;
+                background: url("../../assets/imgs/icon-system-settings-active.png") no-repeat;
+                content: '';
+            }
+            .icon-user-list:before {
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-user-list.png") no-repeat;
+                content: '';
+            }
+            .icon-login-log:before {
+                width: 16px !important;
+                height: 16px !important;
+                background: url("../../assets/imgs/icon-login-log.png") no-repeat;
+                content: '';
+            }
+            .icon-assets-list:before {
+                height: 18px !important;
+                background: url("../../assets/imgs/icon-assets-list.png") no-repeat;
+                content: '';
+            }
+            .icon-user-group:before {
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-user-group.png") no-repeat;
+                content: '';
+            }
+            .icon-assets-auth:before {
+                width: 19px !important;
+                height: 18px !important;
+                background: url("../../assets/imgs/icon-assets-auth.png") no-repeat;
+                content: '';
+            }
+            .icon-network-list:before {
+                height: 18px !important;
+                background: url("../../assets/imgs/icon-network-list.png") no-repeat;
+                content: '';
+            }
+            .icon-manage-user:before {
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-manage-user.png") no-repeat;
+                content: '';
+            }
+            .icon-system-user:before {
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-system-user.png") no-repeat;
+                content: '';
+            }
+            .icon-online-session:before {
+                height: 16px !important;
+                background: url("../../assets/imgs/icon-online-session.png") no-repeat;
+                content: '';
+            }
+            .icon-history-session:before {
+                height: 16px !important;
+                background: url("../../assets/imgs/icon-history-session.png") no-repeat;
+                content: '';
+            }
+            .icon-command-record:before {
+                width: 16px !important;
+                height: 15px !important;
+                background: url("../../assets/imgs/icon-command-record.png") no-repeat;
+                content: '';
+            }
+            .icon-web-terminal:before {
+                width: 16px !important;
+                height: 14px !important;
+                background: url("../../assets/imgs/icon-web-terminal.png") no-repeat;
+                content: '';
+            }
+            .icon-terminal-manage:before {
+                width: 16px !important;
+                height: 14px !important;
+                background: url("../../assets/imgs/icon-terminal-manage.png") no-repeat;
+                content: '';
+            }
+            .icon-label-manage:before {
+                width: 16px !important;
+                height: 17px !important;
+                background: url("../../assets/imgs/icon-label-manage.png") no-repeat;
+                content: '';
+            }
+            span {
+                color: #fff;
+            }
+        }
+        .el-icon-user-manage {
+            display: inline-block;
+            width: 18px;
+            height: 16px;
+            background: url("../../assets/imgs/icon-user-manage-normal.png") no-repeat;
+        }
+        .el-icon-assets-manage {
+            display: inline-block;
+            width: 17px;
+            height: 17px;
+            background: url("../../assets/imgs/icon-assets-manage-normal.png") no-repeat;
+        }
+        .el-icon-permission-manage {
+            display: inline-block;
+            width: 16px;
+            height: 15px;
+            background: url("../../assets/imgs/icon-permission-manage-normal.png") no-repeat;
+        }
+        .el-icon-session-manage {
+            display: inline-block;
+            width: 18px;
+            height: 16px;
+            background: url("../../assets/imgs/icon-session-manage-normal.png") no-repeat;
+        }
+        .second-list {
+            display: inline-block;
+            width: 200px;
+            li {
+                width: 50%;
+                line-height: 2.0em;
+                text-align: center;
+                float: left;
+            }
         }
     }
 </style>

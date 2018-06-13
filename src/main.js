@@ -13,7 +13,9 @@ import ol from 'openlayers';
 import QuillEditor from 'vue-quill-editor';
 import 'openlayers/css/ol.css';
 import contentmenu from 'v-contextmenu';
-import 'v-contextmenu/dist/index.css'
+import 'v-contextmenu/dist/index.css';
+import './assets/styles/index.scss';
+
 
 Vue.use(ol);
 Vue.use(VueWechatTitle);

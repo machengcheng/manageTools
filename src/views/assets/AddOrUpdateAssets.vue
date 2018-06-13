@@ -188,8 +188,8 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" align="center">
-                        <el-button>取 消</el-button>
-                        <el-button type="primary" :loading="isLoading" @click="submitForm('addOrUpdateAssetsForm')">确 定</el-button>
+                        <el-button class="default-button">取 消</el-button>
+                        <el-button type="primary" :loading="isLoading" class="danger-button" @click="submitForm('addOrUpdateAssetsForm')">确 定</el-button>
                     </el-col>
                     <div class="clear"></div>
                 </div>
@@ -522,7 +522,7 @@
                 margin-bottom: 20px;
                 .item-title {
                     display: inline-block;
-                    border-bottom: 2px solid #409eff;
+                    border-bottom: 2px solid #E96373;
                 }
             }
             .el-input .el-input__inner {

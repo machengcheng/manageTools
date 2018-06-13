@@ -58,8 +58,8 @@
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" :loading="isLoading" @click="submitForm('addOrUpdateLabelDialogForm')">确 定</el-button>
+                <el-button @click="closeDialog" class="default-button">取 消</el-button>
+                <el-button type="primary" class="danger-button" :loading="isLoading" @click="submitForm('addOrUpdateLabelDialogForm')">确 定</el-button>
             </div>
         </el-dialog>
     </section>

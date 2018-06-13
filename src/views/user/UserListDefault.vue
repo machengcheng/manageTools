@@ -3,10 +3,10 @@
         <import-dialog :importDialogVisible="importDialogVisible" @importDialogVisibleEvent="importDialogVisibleStatus"></import-dialog>
         <div class="box-title">用户列表</div>
         <div class="box-operate">
-            <el-button type="primary" size="small" @click="createUser();" class="createBtn">创建用户</el-button>
-            <el-button size="small" class="fr" @click="exportClick" :disabled="isExporting">导出</el-button>
-            <el-button size="small" class="fr" @click="importClick">导入</el-button>
-            <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
+            <el-button type="primary" size="small" @click="createUser();" class="danger-button">创建用户</el-button>
+            <el-button size="small" class="fr default-button" @click="exportClick" :disabled="isExporting">导出</el-button>
+            <el-button size="small" class="fr default-button" @click="importClick">导入</el-button>
+            <el-button  type="primary" size="small" @click="search" class="danger-button fr mr20">查询</el-button>
             <el-input v-model="searchKey" size="small" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
         </div>
         <div class="box-content">
@@ -29,7 +29,7 @@
                     width="120"
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" @click="userDetail(scope.$index, scope.row)" size="small">{{ scope.row.name }}</el-button>
+                        <el-button type="text" @click="userDetail(scope.$index, scope.row)" size="small" class="link-text">{{ scope.row.name }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -70,7 +70,7 @@
                             type="primary"
                             size="mini"
                             plain
-                            class="updateBtn"
+                            class="default-button"
                             @click="updateUser(scope.$index, scope.row)"
                         >
                             更新
@@ -78,6 +78,7 @@
                         <el-button
                             type="danger"
                             size="mini"
+                            class="default-button"
                             plain
                             @click="deleteUser(scope.$index, scope.row)"
                         >
@@ -103,6 +104,7 @@
             <el-button
                 type="primary"
                 size="small"
+                class="primary-button"
                 plain
                 :disabled="!operateType || multipleSelection.length === 0"
                 @click="submitOperate"
@@ -381,6 +383,8 @@
                 that.$confirm('删除该记录?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    cancelButtonClass: 'default-button',
+                    confirmButtonClass: 'danger-button',
                     type: 'warning'
                 }).then(() => {
                     that.deleteUserFunc(index, row);

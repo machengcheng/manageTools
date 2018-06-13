@@ -29,10 +29,10 @@
             </el-col>
             <el-col :span="18" class="pt20">
                 <div class="box-operate pt0">
-                    <el-button type="primary" size="small" @click="createAssets">创建资产</el-button>
-                    <el-button size="small" class="fr">导出</el-button>
-                    <el-button size="small" class="fr">导入</el-button>
-                    <el-button  type="primary" size="small" @click="search" class="fr mr20">查询</el-button>
+                    <el-button type="primary" size="small" @click="createAssets" class="danger-button">创建资产</el-button>
+                    <el-button size="small" class="fr default-button">导出</el-button>
+                    <el-button size="small" class="fr default-button">导入</el-button>
+                    <el-button  type="primary" size="small" @click="search" class="danger-button fr mr20">查询</el-button>
                     <el-input v-model="searchKey" size="small" @click="search" class="searchKey wat fr" placeholder="请输入查询内容"></el-input>
                 </div>
                 <div class="box-content">
@@ -55,7 +55,7 @@
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" @click="assetsDetail(scope.$index, scope.row)" size="small">{{ scope.row.hostname }}</el-button>
+                                <el-button type="text" @click="assetsDetail(scope.$index, scope.row)" size="small" class="link-text">{{ scope.row.hostname }}</el-button>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -76,17 +76,23 @@
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>
+                                <span v-if="scope.row.is_active" class="dotY"></span><span class="dotYText" v-if="scope.row.is_active">是</span>
+                                <span v-if="!scope.row.is_active" class="dotN"></span><span class="dotNText" v-if="!scope.row.is_active">否</span>
+                                <!--<el-button type="text" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>-->
                             </template>
                         </el-table-column>
                         <el-table-column
                             prop="is_connective"
                             label="可连接"
                             width="130"
-                            show-overflow-tooltip
+                            show-overflow-tooltips
                         >
                             <template slot-scope="scope">
-                                <el-button type="text"  size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>
+                                <span v-if="scope.row.is_connective" class="linkY"></span>
+                                <span v-if="!scope.row.is_connective" class="linkN"></span>
+                                <!--<span v-if="scope.row.ip !== '10.221.121.1'">是</span>-->
+                                <!--<span v-if="scope.row.ip === '10.221.121.1'">否</span>-->
+                                <!--<el-button type="text"  size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>-->
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -98,6 +104,7 @@
                                 <el-button
                                     type="primary"
                                     size="mini"
+                                    class="default-button"
                                     plain
                                     @click="updateAssets(scope.$index, scope.row)"
                                 >
@@ -132,6 +139,7 @@
                     <el-button
                         type="primary"
                         size="small"
+                        class="primary-button"
                         plain
                         :disabled="!operateType || multipleSelection.length === 0 || !currentNodeId"
                         @click="batchOperate"
@@ -430,6 +438,8 @@
                 that.$confirm('确认删除该节点?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    cancelButtonClass: 'default-button',
+                    confirmButtonClass: 'danger-button',
                     type: 'warning'
                 }).then(() => {
                     that.removeNodeFunc();
@@ -583,6 +593,8 @@
                 that.$confirm('删除该记录?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    cancelButtonClass: 'default-button',
+                    confirmButtonClass: 'danger-button',
                     type: 'warning'
                 }).then(() => {
                     that.deleteAssetFunc(index, row);

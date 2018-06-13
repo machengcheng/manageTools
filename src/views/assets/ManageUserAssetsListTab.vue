@@ -1,7 +1,7 @@
 <template>
     <section class="manage-user-assets-list-tab-section">
         <div class="box-operate">
-            <el-button  type="primary" size="small" @click="search" class="fr">查询</el-button>
+            <el-button  type="primary" size="small" @click="search" class="danger-button fr">查询</el-button>
             <el-input v-model="searchKey" size="small" class="searchKey wat fr mr20" placeholder="请输入查询内容"></el-input>
         </div>
         <div class="box-content">
@@ -24,7 +24,7 @@
                     show-overflow-tooltip
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" size="small" @click="assetsDetail(scope.$index, scope.row)">{{ scope.row.hostname }}</el-button>
+                        <el-button type="text" size="small" class="link-text" @click="assetsDetail(scope.$index, scope.row)">{{ scope.row.hostname }}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -45,7 +45,9 @@
                     show-overflow-tooltip
                 >
                     <template slot-scope="scope">
-                        <el-button type="text" size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>
+                        <span v-if="scope.row.is_connective" class="linkY"></span>
+                        <span v-if="!scope.row.is_connective" class="linkN"></span>
+                        <!--<el-button type="text" size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>-->
                     </template>
                 </el-table-column>
             </el-table>

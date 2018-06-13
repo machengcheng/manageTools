@@ -240,16 +240,18 @@ a.link:hover {
     width: 8px;
     height: 8px;
     background: #36C9A9;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
     border: 1px solid #16A085;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
 }
 .dotYText {
     width: 26px;
     height: 50px;
     font-size: 13px;
-    color:rgba(22,160,133,1);
+    color: #16A085;
     margin-left: 3px;
 }
 
@@ -258,9 +260,9 @@ a.link:hover {
     width: 8px;
     height: 8px;
     background: #FFE1D6;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
     border: 1px solid #F59A78;
 }
 .dotNText {
@@ -271,6 +273,20 @@ a.link:hover {
     margin-left: 3px;
 }
 
+.linkY {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: url(../../assets/imgs/icon-linked.png) no-repeat;
+}
+.linkN {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: url(../../assets/imgs/icon-not-linked.png) no-repeat;
+}
+
+/** checkbox样式 **/
 .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner {
     background-color: #EB0124!important;
     border-color: #EB0124!important;
@@ -280,6 +296,83 @@ a.link:hover {
 }
 .el-checkbox__input.is-focus .el-checkbox__inner {
     border-color: #EB0124!important;
+}
+.el-checkbox__inner:hover {
+    border-color: #EB0124!important;
+}
+/** checkbox样式 **/
+
+.el-tabs--border-card>.el-tabs__header .el-tabs__item:not(.is-disabled):hover {
+    color: #E96375!important;
+}
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+    color: #E96375!important;
+}
+
+
+.tip-text {
+    opacity: 0.8;
+    filter: alpha(opacify=80);
+    color: #E96373!important;
+    font-style: normal;
+}
+
+.link-text, .link-text:active, .link-text:focus {
+    text-decoration: none;
+    color: #E96373!important;
+    opacity: 0.8;
+    filter: alpha(opacify=80);
+    font-style: normal;
+}
+.link-text:hover {
+    text-decoration: none;
+    color: #E96373!important;
+    opacity: 1.0;
+    filter: alpha(opacify=100);
+    font-style: normal;
+}
+
+/** 分页样式  **/
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #E96373;
+    color: #fff!important;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled):hover {
+  color: #E96373;
+}
+
+.v-contextmenu--default .v-contextmenu-item--hover {
+    background-color: #E96373!important;
+}
+
+
+.el-select .el-input__inner:focus {
+    border-color: #E96373!important;
+}
+.el-select .el-input.is-focus .el-input__inner {
+    border-color: #E96373!important;
+}
+
+.el-select-dropdown__item.selected {
+    color: #E96373!important;
+}
+.el-select-dropdown.is-multiple .el-select-dropdown__item.selected {
+    color: #E96373!important;
+}
+
+
+.upload-demo {
+    .el-upload {
+        .el-upload-dragger:hover {
+            border-color: #E96373!important;
+        }
+    }
+    .el-upload-list__item.is-success .el-upload-list__item-name:focus,
+    .el-upload-list__item.is-success .el-upload-list__item-name:hover {
+        color: #E96373!important;
+        cursor: pointer;
+    }
 }
 
 
@@ -296,25 +389,109 @@ a.link:hover {
     border-color: $createBtnBorderColor;
 }
 
-.updateBtn {
-    font-size: $updateBtnFontSize!important;
-    color: $updateBtnColor!important;
-    background: $updateBtnBg!important;
-    -webkit-border-radius: $updateBtnBorderRadius!important;
-    -moz-border-radius: $updateBtnBorderRadius!important;
-    border-radius: $updateBtnBorderRadius!important;
-    border: $updateBtnBorderWidth $updateBtnBorderStyle $updateBtnBorderColor!important;
+.default-button {
+    font-size: $font-size13!important;
+    color: $default-font-color!important;
+    background: $default-bg-color!important;
+    -webkit-border-radius: $default-border-radius!important;
+    -moz-border-radius: $default-border-radius!important;
+    border-radius: $default-border-radius!important;
+    border: $default-border-width $default-border-style $updateBtnBorderColor!important;
 }
-.updateBtn:hover {
-    font-size: $updateBtnHoverFontSize!important;
-    color: $updateBtnHoverColor!important;
-    background: $updateBtnHoverBg!important;
-    -webkit-border-radius: $updateBtnHoverBorderRadius!important;
-    -moz-border-radius: $updateBtnHoverBorderRadius!important;
-    border-radius: $updateBtnHoverBorderRadius!important;
-    border: $updateBtnHoverBorderWidth $updateBtnHoverBorderStyle $updateBtnHoverBorderColor!important;
+.default-button:hover {
+    font-size: $font-size13-hover!important;
+    color: $default-font-hover-color!important;
+    background: $default-bg-hover-color!important;
+    -webkit-border-radius: $default-border-hover-radius!important;
+    -moz-border-radius: $default-border-hover-radius!important;
+    border-radius: $default-border-hover-radius!important;
+    border: $default-border-hover-width $default-border-hover-style $updateBtnHoverBorderColor!important;
     -webkit-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
     -moz-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
     -o-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
     box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+}
+.default-button.is-disabled {
+    color: $default-font-disabled-color!important;
+    background-color: $default-bg-disabled-color!important;
+    border-color: $default-border-disabled-color!important;
+}
+
+.info-button {
+    font-size: $font-size13!important;
+    color: $white-font-color!important;
+    background: $info-bg-color!important;
+    -webkit-border-radius: $info-border-radius!important;
+    -moz-border-radius: $info-border-radius!important;
+    border-radius: $info-border-radius!important;
+    border: $info-border-width $info-border-style $info-border-color!important;
+}
+.info-button:hover {
+    font-size: $font-size13-hover!important;
+    color: $white-font-hover-color!important;
+    background: $info-bg-hover-color!important;
+    -webkit-border-radius: $info-border-hover-radius!important;
+    -moz-border-radius: $info-border-hover-radius!important;
+    border-radius: $info-border-hover-radius!important;
+    border: $info-border-hover-width $info-border-hover-style $info-border-hover-color!important;
+    -webkit-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    -moz-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    -o-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+}
+
+.danger-button {
+    font-size: $font-size13!important;
+    color: $white-font-color!important;
+    background: $danger-bg-color!important;
+    -webkit-border-radius: $danger-border-radius!important;
+    -moz-border-radius: $danger-border-radius!important;
+    border-radius: $danger-border-radius!important;
+    border: $danger-border-width $danger-border-style $danger-border-color!important;
+}
+.danger-button:hover {
+    font-size: $font-size13-hover!important;
+    color: $white-font-hover-color!important;
+    background: $danger-bg-hover-color!important;
+    -webkit-border-radius: $danger-border-hover-radius!important;
+    -moz-border-radius: $danger-border-hover-radius!important;
+    border-radius: $danger-border-hover-radius!important;
+    border: $danger-border-hover-width $danger-border-hover-style $danger-border-hover-color!important;
+    -webkit-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    -moz-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    -o-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+}
+.danger-button.is-disabled {
+    color: $danger-font-disabled-color!important;
+    background-color: $danger-bg-disabled-color!important;
+    border-color: $danger-border-disabled-color!important;
+}
+
+.primary-button {
+    font-size: $font-size13!important;
+    color: $primary-font-color!important;
+    background: $primary-bg-color!important;
+    -webkit-border-radius: $primary-border-radius!important;
+    -moz-border-radius: $primary-border-radius!important;
+    border-radius: $primary-border-radius!important;
+    border: $primary-border-width $primary-border-style $primary-border-color!important;
+}
+.primary-button:hover {
+    font-size: $font-size13-hover!important;
+    color: $primary-font-hover-color!important;
+    background: $primary-bg-hover-color!important;
+    -webkit-border-radius: $primary-border-hover-radius!important;
+    -moz-border-radius: $primary-border-hover-radius!important;
+    border-radius: $primary-border-hover-radius!important;
+    border: $primary-border-hover-width $primary-border-hover-style $primary-border-hover-color!important;
+    -webkit-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    -moz-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    -o-box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+    box-shadow: 0 0 23px 0 rgba(240,241,244,0.5) !important;
+}
+.primary-button.is-disabled {
+    color: $primary-font-disabled-color!important;
+    background-color: $primary-bg-disabled-color!important;
+    border-color: $primary-border-disabled-color!important;
 }

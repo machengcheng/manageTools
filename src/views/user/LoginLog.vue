@@ -2,7 +2,7 @@
     <section class="login-log-section">
         <div class="box-title">登录日志</div>
         <div class="box-operate">
-            <el-button  type="primary" size="small" @click="search" class="fr">查询</el-button>
+            <el-button  type="primary" size="small" @click="search" class="fr danger-button">查询</el-button>
             <el-input v-model="username" size="small" class="searchKey wat fr mr20" placeholder="请输入查询内容"></el-input>
         </div>
         <div class="box-content">
@@ -24,28 +24,24 @@
                 <el-table-column
                     prop="username"
                     label="用户名"
-                    sortable
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
                     prop="type"
                     label="类型"
-                    sortable
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
                     prop="user_agent"
                     label="Agent"
-                    sortable
                     show-overflow-tooltip
                 >
                 </el-table-column>
                 <el-table-column
                     prop="ip"
                     label="IP"
-                    sortable
                     width="130"
                     show-overflow-tooltip
                 >
@@ -53,7 +49,6 @@
                 <el-table-column
                     prop="city"
                     label="城市"
-                    sortable
                     show-overflow-tooltip
                 >
                 </el-table-column>

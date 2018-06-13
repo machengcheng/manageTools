@@ -7,18 +7,16 @@
             :lock-scroll="false"
             :close-on-click-modal="false"
             :open="initDialogData()"
+            width="40%"
             >
             <div class="content">
                 <el-col :span="24" align="left">
-                    <el-button type="text">下载模板或使用导出的csv格式</el-button>
+                    <a href="http://localhost:8000/users/user/export/" class="link-text">下载模板</a>
                 </el-col>
                 <el-col :span="24" align="left">
-                    下载: <a href="http://localhost:8000/users/user/export/" class="link">模板</a>
-                </el-col>
-                <el-col :span="24" align="left">
-                    用户csv文件 :
                     <el-upload
                         class="upload-demo"
+                        drag
                         action="http://localhost:8000/users/user/import/"
                         :on-preview="handlePreview"
                         :on-remove="handleRemove"
@@ -29,11 +27,13 @@
                         :file-list="fileList"
                         style="display: inline-block;"
                         >
-                        <el-button size="small" type="primary">点击上传</el-button>
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em class="link-text">点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
                     </el-upload>
                 </el-col>
                 <el-col :span="24" align="left">
-                    <el-button type="text" class="tip">如果设置了id，则会使用该行信息更新该id的用户</el-button>
+                    <span class="tip-text">如果设置了id，则会使用该行信息更新该id的用户</span>
                 </el-col>
                 <el-col :span="24" align="left">
                     <div>
@@ -48,8 +48,8 @@
                 </el-col>
             </div>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" @click="closeDialog">确 定</el-button>
+                <el-button @click="closeDialog" class="default-button">取 消</el-button>
+                <el-button type="primary" @click="closeDialog" class="danger-button">确 定</el-button>
             </div>
         </el-dialog>
     </section>
@@ -102,7 +102,7 @@
 <style lang="scss">
     .import-dialog-section {
         .el-dialog__wrapper {
-            min-width: 600px!important;
+            min-width: 400px!important;
             .el-dialog__body {
                 padding-top: 10px!important;
             }
@@ -121,6 +121,25 @@
             }
             [class*=el-col-12] {
                 float: left;
+            }
+        }
+        .upload-demo {
+            display: block!important;
+            margin: 10px 0;
+            .el-upload {
+                width: 100% !important;
+                margin: 0 auto;
+                .el-upload-dragger {
+                    width: 100% !important;
+                }
+                .el-upload-dragger:hover {
+                    border-color: #E96373!important;
+                }
+            }
+            .el-upload-list__item.is-success .el-upload-list__item-name:focus,
+            .el-upload-list__item.is-success .el-upload-list__item-name:hover {
+                color: #E96373!important;
+                cursor: pointer;
             }
         }
     }

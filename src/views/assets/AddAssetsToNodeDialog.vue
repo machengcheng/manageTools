@@ -29,7 +29,7 @@
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" @click="assetsDetail(scope.$index, scope.row)" size="small">{{ scope.row.hostname }}</el-button>
+                                <el-button type="text" class="link-text" @click="assetsDetail(scope.$index, scope.row)" size="small">{{ scope.row.hostname }}</el-button>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -50,7 +50,9 @@
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>
+                                <span v-if="scope.row.is_active" class="dotY"></span><span class="dotYText" v-if="scope.row.is_active">是</span>
+                                <span v-if="!scope.row.is_active" class="dotN"></span><span class="dotNText" v-if="!scope.row.is_active">否</span>
+                                <!--<el-button type="text" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>-->
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -59,7 +61,9 @@
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>
+                                <span v-if="scope.row.is_connective" class="linkY"></span>
+                                <span v-if="!scope.row.is_connective" class="linkN"></span>
+                                <!--<el-button type="text" size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>-->
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -71,6 +75,7 @@
                                 <el-button
                                     type="primary"
                                     size="mini"
+                                    class="default-button"
                                     plain
                                     @click="updateAssets(scope.$index, scope.row)"
                                 >
@@ -79,6 +84,7 @@
                                 <el-button
                                     type="danger"
                                     size="mini"
+                                    class="default-button"
                                     plain
                                     @click="deleteAsset(scope.$index, scope.row)"
                                 >
@@ -95,8 +101,8 @@
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" :loading="isLoading" :disabled="multipleSelection.length === 0" @click="submitForm('addAssetsToNodeDialogForm')">确 定</el-button>
+                <el-button @click="closeDialog" class="default-button">取 消</el-button>
+                <el-button type="primary" :loading="isLoading" class="danger-button" :disabled="multipleSelection.length === 0" @click="submitForm('addAssetsToNodeDialogForm')">确 定</el-button>
             </div>
         </el-dialog>
     </section>
@@ -181,6 +187,8 @@
                 that.$confirm('删除该记录?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    cancelButtonClass: 'default-button',
+                    confirmButtonClass: 'danger-button',
                     type: 'warning'
                 }).then(() => {
                     that.deleteAssetFunc(index, row);

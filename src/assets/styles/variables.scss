@@ -77,7 +77,9 @@ $tip: #ed5565;
 /**
  * 超链接
  */
-$link: #409EFF;
+$link: #E96373;
+
+$default-color: #f56c6c;
 
 /**
  * 通用按钮样式
@@ -111,4 +113,80 @@ $updateBtnHoverBorderStyle: solid;
 $updateBtnHoverBorderColor: #fbc4c4;
 /** 结束 **/
 
+/** 通用按钮字体颜色设置开始 **/
+$white-font-color: #fff;
+$white-font-hover-color: #fff;
+$default-font-color: #86939E;
+$default-font-hover-color: #f56c6c;
+$default-font-disabled-color: #bcbec2;
+$danger-font-disabled-color: #fff;
+$primary-font-color: #f56c6c;
+$primary-font-hover-color: #fff;
+$primary-font-disabled-color: #f9a7a7;
+/** 通用按钮字体颜色设置结束 **/
 
+/** 通用按钮字体大小设置开始 **/
+$font-size13: 13px;
+$font-size13-hover: 13px;
+/** 通用按钮字体大小设置结束 **/
+
+/** 通用按钮背景颜色设置开始 **/
+$danger-bg-color: #f56c6c;
+$danger-bg-hover-color: #f78989;
+$info-bg-color: #f4f4f5;
+$info-bg-hover-color: #909399;
+$default-bg-color: #F6F8F9;
+$default-bg-hover-color: #fef0f0;
+$default-bg-disabled-color: #f4f4f5;
+$primary-bg-color: #fef0f0;
+$primary-bg-hover-color: #f56c6c;
+$primary-bg-disabled-color: #fef0f0;
+$danger-bg-disabled-color: #fab6b6;
+/** 通用按钮字体背景颜色设置结束 **/
+
+/** 通用按钮边框颜色设置开始 **/
+$danger-border-color: #f56c6c;
+$danger-border-hover-color: #f78989;
+$info-border-color: #d3d4d6;
+$info-border-hover-color: #909399;
+$default-border-color: #D2D6DE;
+$default-border-hover-color: #fbc4c4;
+$default-border-disabled-color: #e9e9eb;
+$primary-border-color: #FBC4C5;
+$primary-border-hover-color: #f56c6c;
+$primary-border-disabled-color: #fde2e2;
+$danger-border-disabled-color: #fab6b6;
+/** 通用按钮边框颜色设置结束 **/
+
+/** 通用按钮边框宽度设置开始 **/
+$danger-border-width: 1px;
+$danger-border-hover-width: 1px;
+$info-border-width: 1px;
+$info-border-hover-width: 1px;
+$default-border-width: 1px;
+$default-border-hover-width: 1px;
+$primary-border-width: 1px;
+$primary-border-hover-width: 1px;
+/** 通用按钮边框宽度设置结束 **/
+
+/** 通用按钮边框样式设置开始 **/
+$danger-border-style: solid;
+$danger-border-hover-style: solid;
+$info-border-style: solid;
+$info-border-hover-style: solid;
+$default-border-style: solid;
+$default-border-hover-style: solid;
+$primary-border-style: solid;
+$primary-border-hover-style: solid;
+/** 通用按钮边框样式设置结束 **/
+
+/** 通用按钮边框圆角大小设置开始 **/
+$danger-border-radius: 2px;
+$danger-border-hover-radius: 2px;
+$info-border-radius: 2px;
+$info-border-hover-radius: 2px;
+$default-border-radius: 2px;
+$default-border-hover-radius: 2px;
+$primary-border-radius: 2px;
+$primary-border-hover-radius: 2px;
+/** 通用按钮边框圆角大小设置结束 **/

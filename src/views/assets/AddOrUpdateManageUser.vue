@@ -56,7 +56,7 @@
                                 :limit="3"
                                 :on-exceed="handleExceed"
                                 :file-list="fileList">
-                                <el-button size="small" type="primary">点击上传</el-button>
+                                <el-button size="small" class="danger-button" type="primary">点击上传</el-button>
                                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                             </el-upload>
                         </el-form-item>
@@ -77,8 +77,8 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" align="center">
-                        <el-button>取 消</el-button>
-                        <el-button type="primary" @click="submitForm('addOrUpdateManageUserForm')" :loading="isLoading">确 定</el-button>
+                        <el-button class="default-button">取 消</el-button>
+                        <el-button type="primary" class="danger-button" @click="submitForm('addOrUpdateManageUserForm')" :loading="isLoading">确 定</el-button>
                     </el-col>
                     <div class="clear"></div>
                 </div>

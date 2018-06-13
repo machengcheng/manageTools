@@ -18,7 +18,7 @@
             </el-col>
             <el-col :span="18" class="pt20">
                 <div class="box-operate pt0">
-                    <el-button  type="primary" size="small" @click="search" class="fr">查询</el-button>
+                    <el-button  type="primary" size="small" @click="search" class="danger-button fr">查询</el-button>
                     <el-input v-model="searchKey" size="small" class="searchKey wat fr mr20" placeholder="请输入查询内容"></el-input>
                 </div>
                 <div class="box-content">
@@ -41,7 +41,7 @@
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" @click="assetsDetail(scope.$index, scope.row)" size="small">{{ scope.row.hostname }}</el-button>
+                                <el-button type="text" @click="assetsDetail(scope.$index, scope.row)" class="link-text" size="small">{{ scope.row.hostname }}</el-button>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -56,7 +56,9 @@
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>
+                                <span v-if="scope.row.is_active" class="dotY"></span><span class="dotYText" v-if="scope.row.is_active">是</span>
+                                <span v-if="!scope.row.is_active" class="dotN"></span><span class="dotNText" v-if="!scope.row.is_active">否</span>
+                                <!--<el-button type="text" size="small">{{ scope.row.is_active === true ? '√' : 'X'}}</el-button>-->
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -65,7 +67,9 @@
                             show-overflow-tooltip
                         >
                             <template slot-scope="scope">
-                                <el-button type="text"  size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>
+                                <span v-if="scope.row.is_connective" class="linkY"></span>
+                                <span v-if="!scope.row.is_connective" class="linkN"></span>
+                                <!--<el-button type="text"  size="small">{{ scope.row.is_connective === true ? '√' : 'X'}}</el-button>-->
                             </template>
                         </el-table-column>
                     </el-table>
@@ -399,7 +403,7 @@
             display: inline-block!important;
         }
         .curSelectedNode {
-            color: #409eff;
+            color: #E96373;
             font-weight: bold;
         }
         .nodeOpt {

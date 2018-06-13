@@ -60,8 +60,8 @@
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" :loading="isLoading" @click="submitForm('addOrUpdateNetworkDialogForm')">确 定</el-button>
+                <el-button @click="closeDialog" class="default-button">取 消</el-button>
+                <el-button type="primary" :loading="isLoading" class="danger-button" @click="submitForm('addOrUpdateNetworkDialogForm')">确 定</el-button>
             </div>
         </el-dialog>
     </section>
